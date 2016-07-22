@@ -6,7 +6,7 @@ var Util = {
 		return Math.floor(Math.random() * 3) - 1;
 	},
 	rand: function(low, hi){
-		return Math.floor(Math.random() * (hi - low)) + low;
+		return Math.floor(Math.random() * (hi - low + 1)) + low;
 	},
 	noop: function(){
 		return true;

@@ -112,7 +112,7 @@ Cat.prototype = {
 		return Util.distance(this.sprite.x, this.sprite.y, this.target.sprite.x, this.target.sprite.y);
 	},
 	shouldAttack: function(){
-		return this._distanceToTarget() < 10;
+		return this.target.currentFood && this._distanceToTarget() < 10;
 	},
 	getCloser: function(){
 		return this._distanceToTarget() > 20 && this._distanceToTarget() < 50;

@@ -8,6 +8,9 @@ var Util = {
 	rand: function(low, hi){
 		return Math.floor(Math.random() * (hi - low + 1)) + low;
 	},
+	randomElementOf: function(array){
+		return array[Util.rand(0, array.length-1)];
+	},
 	noop: function(){
 		return true;
 	}

@@ -21,6 +21,7 @@ function Cat(catCafe, pera, x, y, baseSprite){
 	this.target = pera;
 
 	this.sprite = catCafe.game.add.sprite(x, y, 'tileset', 0, catCafe.entitiesGroup);
+	this.sprite._cat = this;
 	this.sprite.anchor.setTo(0.5, 0.75);
 	catCafe.game.physics.arcade.enable(this.sprite);
 	this.sprite.body.collideWorldBounds = true;

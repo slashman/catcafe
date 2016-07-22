@@ -23,11 +23,49 @@ function dragCollide(obj1, obj2){
 	obj1.body.drag.y = 2000;
 	obj2.body.drag.x = 2000;
 	obj2.body.drag.y = 2000;
-
 }
+
+function peraCollide(peraSprite, catSprite){
+	if (catSprite._cat.deadly){
+		if (Pera.currentFood)
+			Pera.dropFood();
+	} 
+}
+
+function hitBar(){
+	if (!Pera.currentFood && CatCafe.currentFood){
+		switch (CatCafe.currentFood){
+			case 'milkShake':
+			Pera.pickMilkShake();
+			break;
+			case 'coffee':
+			Pera.pickCoffee();
+			break;
+			case 'cake':
+			Pera.pickCake();
+			break;
+		}
+		CatCafe.currentFood = false;
+		CatCafe.currentFoodSprite.visible = false;
+	}
+}
+
+var FOOD_TILES = {
+	milkShake: 35,
+	coffee: 43,
+	cake: 59
+};
+
 var CatCafe = {
+	currentFood: false,
 	init: function(){
 		this.game = new Phaser.Game(256, 240, Phaser.AUTO, '', { preload: PhaserStates.preload, create: PhaserStates.create, update: PhaserStates.update }, false, false);
+	},
+	setFoodForCurrentOrder: function(){
+		var food = Util.randomElementOf(['cake', 'milkShake', 'coffee']);
+		this.currentFood = food;
+		this.currentFoodSprite.loadTexture('tileset', FOOD_TILES[food]);
+		this.currentFoodSprite.visible = true;
 	},
 	SFX_MAP: {},
 	playSFX: function(key){
@@ -39,6 +77,7 @@ var CatCafe = {
 		boundary.height = h;
 		this.game.physics.arcade.enable(boundary);
 		boundary.body.immovable = true;
+		return boundary;
 	},
 	start: function(){
 		this.mainGroup = this.game.add.group();
@@ -47,9 +86,11 @@ var CatCafe = {
 		this.boundariesGroup = this.game.add.group(this.mainGroup);
 		this.hudGroup = this.game.add.group();
 		this.game.add.sprite(0, 0, 'bground', 0, this.backgroundGroup);
+		this.currentFoodSprite = this.game.add.sprite(230, 147, 'tileset', 0, this.backgroundGroup);
+		this.currentFoodSprite.visible = false;
 		this.addBoundary(0,0,256,118);
 		this.addBoundary(0,195,256,45);
-		this.addBoundary(231,43,24,152);
+		this.bar = this.addBoundary(231,43,24,152);
 		this.addBoundary(0,118,24,16);
 		Pera.init(this);
 		this.entities = [];
@@ -60,8 +101,10 @@ var CatCafe = {
 		}
 		Pera.sprite.bringToTop();
 		this.sortSpritesByDepth();
+		this.setFoodForCurrentOrder();
 	},
 	update: function(){
+		this.game.physics.arcade.collide(Pera.sprite, this.bar, hitBar, null, this);
 		this.game.physics.arcade.collide(this.entitiesGroup, this.boundariesGroup, null, null, this);
 		for (var i = 0; i < this.entities.length; i++){
 			if (!this.entities[i].sprite.body){
@@ -71,6 +114,7 @@ var CatCafe = {
 			}
 			this.entities[i].update();
 		}
+		this.game.physics.arcade.collide(Pera.sprite, this.entitiesGroup, peraCollide, null, this);
 		this.game.physics.arcade.collide(this.entitiesGroup, this.entitiesGroup, dragCollide, null, this);
 	},
 	getClosestEntity: function(){

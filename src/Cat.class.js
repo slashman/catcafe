@@ -9,10 +9,11 @@ function addToArray(array, val){
 }
 
 var SPRITES = {
-	IDLE: [9, 10, 11, 12, 13, 14],
-	WALK: [9, 10, 11, 12, 13, 14],  //TODO: Walk anim
 	PREPARE_ATTACK: [0, 1, 2, 3],
-	JUMP: [4, 5, 6, 7, 8]
+	JUMP: [4, 5, 6, 7, 8],
+	IDLE: [9, 10, 11, 12, 13, 14],
+	IDLE_2_WALK: [16, 17], 
+	WALK: [18, 19, 20, 21, 22, 23, 24, 25]
 }
 
 function Cat(catCafe, pera, x, y, baseSprite){
@@ -24,6 +25,7 @@ function Cat(catCafe, pera, x, y, baseSprite){
 	catCafe.game.physics.arcade.enable(this.sprite);
 	this.sprite.body.collideWorldBounds = true;
 	this.sprite.animations.add('idle', addToArray(SPRITES.IDLE, baseSprite), 6, true);
+	this.sprite.animations.add('idle2walk', addToArray(SPRITES.IDLE_2_WALK, baseSprite), 6, false);
 	this.sprite.animations.add('walk', addToArray(SPRITES.WALK, baseSprite), 6, true);
 	this.sprite.animations.add('prepareAttack', addToArray(SPRITES.PREPARE_ATTACK, baseSprite), 8, true);
 	this.sprite.animations.add('jump', addToArray(SPRITES.JUMP, baseSprite), 8, true);
@@ -77,8 +79,16 @@ Cat.prototype = {
 		    }
 		    if (idle){
 		    	this.sprite.animations.play('idle');
+		    	this.isWalking = false;
 		    } else {
-		    	this.sprite.animations.play('walk');
+		    	if (!this.isWalking){
+		    		this.sprite.animations.play('idle2walk');
+		    		this.isWalking = true;
+		    	} else {
+		    		if (!this.sprite.animations.getAnimation('idle2walk').isPlaying){
+		    			this.sprite.animations.play('walk');
+		    		}	
+		    	}
 		    }
 		}
 	},
@@ -101,7 +111,7 @@ Cat.prototype = {
 		return this._distanceToTarget() < 10;
 	},
 	getCloser: function(){
-		return this._distanceToTarget() > 20 && this._distanceToTarget() < 30;
+		return this._distanceToTarget() > 20 && this._distanceToTarget() < 50;
 	},
 	getFarther: function(){
 		return this._distanceToTarget() < 5;

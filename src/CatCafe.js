@@ -33,7 +33,7 @@ var CatCafe = {
 		this.entities = [];
 		this.entities.push(Pera);
 		for (var i = 0; i < 10; i++){
-			var cat = new Cat(this, Pera, Util.rand(32,227), Util.rand(120, 198), Util.rand(0,3) * 16 + 32);
+			var cat = new Cat(this, Pera, Util.rand(32,227), Util.rand(120, 198), Util.rand(0,0) * 32 + 64);
 			this.entities.push(cat);
 		}
 		Pera.sprite.bringToTop();

@@ -19,17 +19,18 @@ var PhaserStates = {
 };
 
 function dragCollide(obj1, obj2){
-	obj1.body.drag.x = 2000;
-	obj1.body.drag.y = 2000;
-	obj2.body.drag.x = 2000;
-	obj2.body.drag.y = 2000;
+	
 }
 
 function peraCollide(peraSprite, catSprite){
 	if (catSprite._cat.deadly){
 		if (Pera.currentFood)
 			Pera.dropFood();
-	} 
+	}
+	peraSprite.body.drag.x = 2000;
+	peraSprite.body.drag.y = 2000;
+	catSprite.body.drag.x = 2000;
+	catSprite.body.drag.y = 2000;
 }
 
 function hitBar(){
@@ -51,9 +52,9 @@ function hitBar(){
 }
 
 var FOOD_TILES = {
-	milkShake: 35,
-	coffee: 43,
-	cake: 59
+	milkShake: 32,
+	coffee: 40,
+	cake: 56
 };
 
 var CatCafe = {

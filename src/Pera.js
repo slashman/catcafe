@@ -8,6 +8,10 @@ module.exports = {
 		this.sprite.animations.add('walk', [0, 1, 2, 3, 4, 5, 6, 7], 8, true);
 		this.cursors = catCafe.game.input.keyboard.createCursorKeys();
 	},
+	_flipSprite: function(){
+		this._flipped = !this._flipped;
+		this.sprite.scale.x *= -1;
+	},
 	update: function(){
 		this.sprite.body.drag.x = 0;
 		this.sprite.body.drag.y = 0;
@@ -15,9 +19,15 @@ module.exports = {
 		if (this.cursors.left.isDown) {
 			idle = false;
 	        this.sprite.body.velocity.x = -60;
+	        if (!this._flipped){
+	        	this._flipSprite();
+	        }
 	    } else if (this.cursors.right.isDown) {
 	    	idle = false;
 	        this.sprite.body.velocity.x = 60;
+	        if (this._flipped){
+	        	this._flipSprite();
+	        }
 	    } else {
 	    	this.sprite.body.velocity.x = 0;
 	    }

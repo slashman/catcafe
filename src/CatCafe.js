@@ -6,7 +6,9 @@ var PhaserStates = {
 	preload: function() {
 		this.game.load.image('bground', 'img/bground.png');
 		this.game.load.image('blank', 'img/blank.png');
+		this.game.load.image('gameOver', 'img/gameOver.png');
 		this.game.load.spritesheet('tileset', 'img/tileset.png', 32, 32);
+		this.game.load.spritesheet('ui', 'img/ui.png', 8, 8);
 	},
 	create: function() {
 		this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
@@ -34,6 +36,8 @@ function peraCollide(peraSprite, catSprite){
 }
 
 function hitBar(){
+	if (Pera.dead)
+		return;
 	if (!Pera.currentFood && CatCafe.currentFood){
 		switch (CatCafe.currentFood){
 			case 'milkShake':
@@ -80,12 +84,27 @@ var CatCafe = {
 		boundary.body.immovable = true;
 		return boundary;
 	},
+	reduceHearts: function(){
+		this.currentHeart--;
+		this.hearts[this.currentHeart].loadTexture('ui', 16);
+		if (this.currentHeart === 0){
+			Pera.kill();
+			this.gameOverSprite.visible = true;
+		}
+	},
 	start: function(){
 		this.mainGroup = this.game.add.group();
 		this.backgroundGroup = this.game.add.group(this.mainGroup);
 		this.entitiesGroup = this.game.add.group(this.mainGroup);
 		this.boundariesGroup = this.game.add.group(this.mainGroup);
 		this.hudGroup = this.game.add.group();
+		this.hearts = [];
+		this.currentHeart = 5;
+		for (var i = 0; i < 5; i++){
+			this.hearts[i] = this.game.add.sprite(62 + 10*i, 10, 'ui', 17, this.hudGroup);
+		}
+		this.gameOverSprite = this.game.add.sprite(80, 29, 'gameOver', 0, this.hudGroup);
+		this.gameOverSprite.visible = false;
 		this.game.add.sprite(0, 0, 'bground', 0, this.backgroundGroup);
 		this.currentFoodSprite = this.game.add.sprite(230, 147, 'tileset', 0, this.backgroundGroup);
 		this.currentFoodSprite.visible = false;

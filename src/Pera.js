@@ -34,8 +34,6 @@ module.exports = {
 		this.sprite.addChild(this.cakeSprite);
 
 		this.cursors = catCafe.game.input.keyboard.createCursorKeys();
-
-		//this.pickCake();
 	},
 	pickMilkShake: function(){
 		this.milkShakeSprite.visible = true;
@@ -67,12 +65,16 @@ module.exports = {
 		fallSprite.animations.play('fall');
 		this.currentFood = false;
 		this.catCafe.setFoodForCurrentOrder();
+		this.catCafe.reduceHearts();
 	},
 	_flipSprite: function(){
 		this._flipped = !this._flipped;
 		this.sprite.scale.x *= -1;
 	},
 	update: function(){
+		if (this.dead){
+			return;
+		}
 		this.sprite.body.drag.x = 0;
 		this.sprite.body.drag.y = 0;
 		var idle = true;
@@ -114,5 +116,13 @@ module.exports = {
 	    	this.cakeSprite.animations.play('walk');
 	    }
 		
+	},
+	kill: function(){
+		this.dead = true;
+		this.sprite.frame = 0;
+		this.sprite.body.velocity.x = 0;
+		this.sprite.body.velocity.y = 0;
+    	this.sprite.animations.stop();
+	    	
 	}
 }

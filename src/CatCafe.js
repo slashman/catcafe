@@ -5,6 +5,7 @@ var Util = require('./Util');
 var PhaserStates = {
 	preload: function() {
 		this.game.load.image('bground', 'img/bground.png');
+		this.game.load.image('blank', 'img/blank.png');
 		this.game.load.spritesheet('tileset', 'img/tileset.png', 32, 32);
 	},
 	create: function() {
@@ -17,6 +18,13 @@ var PhaserStates = {
 	}
 };
 
+function dragCollide(obj1, obj2){
+	obj1.body.drag.x = 2000;
+	obj1.body.drag.y = 2000;
+	obj2.body.drag.x = 2000;
+	obj2.body.drag.y = 2000;
+
+}
 var CatCafe = {
 	init: function(){
 		this.game = new Phaser.Game(256, 240, Phaser.AUTO, '', { preload: PhaserStates.preload, create: PhaserStates.create, update: PhaserStates.update }, false, false);
@@ -25,10 +33,24 @@ var CatCafe = {
 	playSFX: function(key){
 		this.SFX_MAP[key].play();
 	},
+	addBoundary: function(x, y, w, h){
+		var boundary = this.game.add.sprite(x,y, 'blank', 0, this.boundariesGroup);
+		boundary.width = w;
+		boundary.height = h;
+		this.game.physics.arcade.enable(boundary);
+		boundary.body.immovable = true;
+	},
 	start: function(){
 		this.mainGroup = this.game.add.group();
+		this.backgroundGroup = this.game.add.group(this.mainGroup);
+		this.entitiesGroup = this.game.add.group(this.mainGroup);
+		this.boundariesGroup = this.game.add.group(this.mainGroup);
 		this.hudGroup = this.game.add.group();
-		this.game.add.sprite(0, 0, 'bground', 0, this.mainGroup);
+		this.game.add.sprite(0, 0, 'bground', 0, this.backgroundGroup);
+		this.addBoundary(0,0,256,118);
+		this.addBoundary(0,195,256,45);
+		this.addBoundary(231,43,24,152);
+		this.addBoundary(0,118,24,16);
 		Pera.init(this);
 		this.entities = [];
 		this.entities.push(Pera);
@@ -39,6 +61,7 @@ var CatCafe = {
 		Pera.sprite.bringToTop();
 	},
 	update: function(){
+		this.game.physics.arcade.collide(this.entitiesGroup, this.boundariesGroup, null, null, this);
 		for (var i = 0; i < this.entities.length; i++){
 			if (!this.entities[i].sprite.body){
 				this.entities.splice(i,1);
@@ -47,6 +70,7 @@ var CatCafe = {
 			}
 			this.entities[i].update();
 		}
+		this.game.physics.arcade.collide(this.entitiesGroup, this.entitiesGroup, dragCollide, null, this);
 	},
 	getClosestEntity: function(){
 		var minDistance = 99999;

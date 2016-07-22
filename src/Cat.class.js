@@ -20,10 +20,11 @@ function Cat(catCafe, pera, x, y, baseSprite){
 	this.catCafe = catCafe;
 	this.target = pera;
 
-	this.sprite = catCafe.game.add.sprite(x, y, 'tileset', 0, catCafe.mainGroup);
+	this.sprite = catCafe.game.add.sprite(x, y, 'tileset', 0, catCafe.entitiesGroup);
 	this.sprite.anchor.setTo(0.5, 0.75);
 	catCafe.game.physics.arcade.enable(this.sprite);
 	this.sprite.body.collideWorldBounds = true;
+	this.sprite.body.setSize(8, 3, 11, 23);
 	this.sprite.animations.add('idle', addToArray(SPRITES.IDLE, baseSprite), 6, true);
 	this.sprite.animations.add('idle2walk', addToArray(SPRITES.IDLE_2_WALK, baseSprite), 6, false);
 	this.sprite.animations.add('walk', addToArray(SPRITES.WALK, baseSprite), 6, true);
@@ -38,6 +39,8 @@ Cat.prototype = {
 		if (!this.doReact()){
 			return;
 		}
+		this.sprite.body.drag.x = 0;
+		this.sprite.body.drag.y = 0;
 		if (this.attacking){
 
 		} else if (this.shouldAttack()){

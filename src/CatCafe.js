@@ -55,10 +55,11 @@ var CatCafe = {
 		this.entities = [];
 		this.entities.push(Pera);
 		for (var i = 0; i < 10; i++){
-			var cat = new Cat(this, Pera, Util.rand(32,227), Util.rand(120, 198), Util.rand(0,0) * 32 + 64);
+			var cat = new Cat(this, Pera, Util.rand(32,227), Util.rand(120, 198), Util.rand(0,1) * 32 + 64);
 			this.entities.push(cat);
 		}
 		Pera.sprite.bringToTop();
+		this.sortSpritesByDepth();
 	},
 	update: function(){
 		this.game.physics.arcade.collide(this.entitiesGroup, this.boundariesGroup, null, null, this);
@@ -86,6 +87,15 @@ var CatCafe = {
 			}
 		}
 		return closest;
+	},
+	sortSpritesByDepth: function(){
+		this.entities.sort(function(a, b) {
+		    return a.sprite.y - b.sprite.y;
+		});
+		for (var i = 0; i < this.entities.length; i++){
+			this.entities[i].sprite.bringToTop();
+		}
+		this.game.time.events.add(500, this.sortSpritesByDepth, this);
 	}
 }
 

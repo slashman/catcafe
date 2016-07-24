@@ -14,6 +14,7 @@ module.exports = {
 		this.sprite.body.collideWorldBounds = true;
 		this.sprite.body.setSize(14, 7, 9, 25);
 		this.sprite.animations.add('walk', [0, 1, 2, 3, 4, 5, 6, 7], 8, true);
+		this.sprite.animations.add('scared', [8, 9, 10], 8, false);
 		
 		this.milkShakeSprite = catCafe.game.add.sprite(0, 0, 'tileset', 32, catCafe.entitiesGroup);
 		this.milkShakeSprite.animations.add('walk', [32, 33], 4, true);
@@ -25,8 +26,8 @@ module.exports = {
 		this.coffeeSprite.anchor.setTo(0.1, 0.9);
 		this.coffeeSprite.visible = false;
 
-		this.cakeSprite = catCafe.game.add.sprite(0, 0, 'tileset', 56, catCafe.entitiesGroup);
-		this.cakeSprite.animations.add('walk', [56], 4, true);
+		this.cakeSprite = catCafe.game.add.sprite(0, 0, 'tileset', 58, catCafe.entitiesGroup);
+		this.cakeSprite.animations.add('walk', [58], 4, true);
 		this.cakeSprite.anchor.setTo(0.1, 0.9);
 		this.cakeSprite.visible = false;
 
@@ -70,9 +71,15 @@ module.exports = {
 			fallSprite.scale.x *= -1;
 		fallSprite.animations.add('fall', DESERT_FALLING[this.currentFood], 4, false);
 		fallSprite.animations.play('fall');
+		this.sprite.animations.play('scared');
+		this.scared = true;
+		this.catCafe.game.time.events.add(1000, this.recoverMovement, this);
 		this.currentFood = false;
 		this.catCafe.resetFoodSprite();
 		this.catCafe.reduceHearts();
+	},
+	recoverMovement: function(){
+		this.scared = false;
 	},
 	deliverFood: function(){
 		this.cakeSprite.visible = false;
@@ -87,7 +94,7 @@ module.exports = {
 		this.sprite.scale.x *= -1;
 	},
 	update: function(){
-		if (this.dead){
+		if (this.dead || this.scared){
 			return;
 		}
 		this.sprite.body.drag.x = 0;

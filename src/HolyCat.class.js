@@ -15,7 +15,7 @@ var SPRITES = {
 var FOOD_TILES = {
 	milkShake: 32,
 	coffee: 40,
-	cake: 56
+	cake: 58
 };
 
 

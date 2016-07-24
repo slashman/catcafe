@@ -76,7 +76,7 @@ function hitKitchen(){
 var FOOD_TILES = {
 	milkShake: 32,
 	coffee: 40,
-	cake: 56
+	cake: 58
 };
 
 var SPECS = {
@@ -143,8 +143,8 @@ var CatCafe = {
 		this.boundariesGroup = this.game.add.group(this.mainGroup);
 		this.hudGroup = this.game.add.group();
 		this.hearts = [];
-		this.currentHeart = 5;
-		for (var i = 0; i < 5; i++){
+		this.currentHeart = 10;
+		for (var i = 0; i < 10; i++){
 			this.hearts[i] = this.game.add.sprite(62 + 10*i, 10, 'ui', 17, this.hudGroup);
 		}
 		this.scoreDigits = [];
@@ -152,6 +152,7 @@ var CatCafe = {
 		for (var i = 0; i < 6; i++){
 			this.scoreDigits[i] = this.game.add.sprite(62 + 8*i, 20, 'ui', 0, this.hudGroup);
 		}
+		this.updateScore();
 		this.gameOverSprite = this.game.add.sprite(80, 29, 'gameOver', 0, this.hudGroup);
 		this.gameOverSprite.visible = false;
 		this.game.add.sprite(0, 0, 'bground', 0, this.backgroundGroup);
@@ -236,6 +237,12 @@ var CatCafe = {
 	},
 	increaseScore: function(){
 		this.score += 100;
+		this.updateScore();
+		var cat = new Cat(this, Pera, Util.rand(32,227), Util.rand(120, 198), Util.rand(0,3) * 32 + 64);
+		this.entities.push(cat);
+		this.stageSprites.push(cat.sprite);
+	},
+	updateScore: function(){
 		for (var i = 0; i < this.scoreDigits.length; i++){
 			this.scoreDigits[i].visible = false;
 		}
@@ -244,9 +251,6 @@ var CatCafe = {
 			this.scoreDigits[i].loadTexture('ui', parseInt(strScore.charAt(i)));
 			this.scoreDigits[i].visible = true;
 		}
-		var cat = new Cat(this, Pera, Util.rand(32,227), Util.rand(120, 198), Util.rand(0,3) * 32 + 64);
-		this.entities.push(cat);
-		this.stageSprites.push(cat.sprite);
 	}
 }
 

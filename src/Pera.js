@@ -9,7 +9,7 @@ module.exports = {
 	kitchenCounter: 0,
 	init: function(catCafe){
 		this.catCafe = catCafe;
-		this.sprite = catCafe.game.add.sprite(40, 140, 'tileset', 0, catCafe.entitiesGroup);
+		this.sprite = catCafe.game.add.sprite(20, 140, 'tileset', 0, catCafe.entitiesGroup);
 		this.sprite.anchor.setTo(0.5, 1);
 		catCafe.game.physics.arcade.enable(this.sprite);
 		this.sprite.body.collideWorldBounds = true;
@@ -158,14 +158,7 @@ module.exports = {
 	    	this.sprite.body.velocity.y = 0;
 	    }
 	    if (idle){
-	    	this.sprite.frame = 0;
-	    	this.sprite.animations.stop();
-	    	this.milkShakeSprite.animations.stop();
-	    	this.coffeeSprite.animations.stop();
-	    	this.binSprite.animations.stop();
-	    	this.binSprite.frame = 16;
-	    	this.puddinSprite.animations.stop();
-	    	this.cakeSprite.animations.stop();
+	    	this.stop();
 	    } else {
 	    	this.sprite.animations.play('walk');
 	    	this.milkShakeSprite.animations.play('walk');
@@ -183,5 +176,25 @@ module.exports = {
 		this.sprite.body.velocity.y = 0;
     	this.sprite.animations.stop();
 	    	
+	},
+	stop: function(){
+		this.sprite.frame = 0;
+    	this.sprite.animations.stop();
+    	this.milkShakeSprite.animations.stop();
+    	this.coffeeSprite.animations.stop();
+    	this.binSprite.animations.stop();
+    	this.binSprite.frame = 16;
+    	this.puddinSprite.animations.stop();
+    	this.cakeSprite.animations.stop();
+	},
+	endStage: function(){
+		this.dead = false;
+		this.stop();
+		this.sprite.body.velocity.x = 0;
+		this.sprite.body.velocity.y = 0;
+		//TODO: Play a cheerful anim?
+	},
+	startStage: function(){
+		this.dead = false;
 	}
 }

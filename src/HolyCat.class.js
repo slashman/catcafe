@@ -56,6 +56,9 @@ HolyCat.prototype = {
 		if (!this.doReact()){
 			return;
 		}
+		if (this.catCafe.gameOver){
+			return;
+		}
 		if (this.eating){
 			// Do nothing
 		} else if (this.wantedFood){
@@ -81,6 +84,8 @@ HolyCat.prototype = {
 		return Math.random() > 0.7;
 	},
 	selectFood: function(){
+		if (this.dead)
+			return;
 		this.wantedFood = Util.randomElementOf(['cake', 'milkShake', 'coffee', 'puddin']);
 		this.thinkingOnFood = false;
 		this.grumpyTimer = this.catCafe.game.time.events.add(15000, this.warnGrumpy, this);
@@ -92,9 +97,13 @@ HolyCat.prototype = {
 		this.wantedFoodSprite.visible = true;
 	},
 	warnGrumpy: function(){
+		if (this.dead)
+			return;
 		this.globe.animations.play('blink');
 	},
 	getGrumpy: function(){
+		if (this.dead)
+			return;
 		//this.sprite.animations.play('grumpy');
 		this.catCafe.reduceHearts();
 		this.wantedFood = false;
@@ -102,6 +111,8 @@ HolyCat.prototype = {
 		this.wantedFoodSprite.visible = false;
 	},
 	giveFood: function(){
+		if (this.dead)
+			return;
 		var foodType = this.target.currentFood;
 		if (foodType && foodType === this.wantedFood){
 			this.catCafe.game.time.events.remove(this.grumpyTimer);
@@ -119,6 +130,11 @@ HolyCat.prototype = {
 	finishEating: function(){
 		this.eating = false;
 		this.foodSprite.visible = false;
+	},
+	destroy: function(){
+		this.dead = true;
+		if (this.grumpyTimer)
+			this.catCafe.game.time.events.remove(this.grumpyTimer);
 	}
 	
 };

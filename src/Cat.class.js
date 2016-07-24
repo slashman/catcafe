@@ -40,6 +40,9 @@ Cat.prototype = {
 		if (!this.doReact()){
 			return;
 		}
+		if (this.catCafe.gameOver){
+			return;
+		}
 		this.sprite.body.drag.x = 0;
 		this.sprite.body.drag.y = 0;
 		if (this.attacking){
@@ -127,6 +130,8 @@ Cat.prototype = {
 		}
 	}, 
 	jump: function(){
+		if (this.dead)
+			return;
 		this.deadly = true;
 		if (this.attackVector.x === 0)
 			this.attackVector.x = 1;
@@ -141,6 +146,9 @@ Cat.prototype = {
 		this.sprite.animations.play('idle');
 		this.sprite.body.velocity.x = 0;
 		this.attacking = false;
+	},
+	destroy: function(){
+		this.dead = true;
 	}
 };
 

@@ -139,6 +139,8 @@ var CatCafe = {
 		if (this.currentHeart === 0){
 			Pera.kill();
 			this.gameOverSprite.visible = true;
+			this.gameOver = true;
+
 		}
 	},
 	start: function(){
@@ -151,18 +153,35 @@ var CatCafe = {
 		this.hearts = [];
 		this.currentHeart = 10;
 		for (var i = 0; i < 10; i++){
-			this.hearts[i] = this.game.add.sprite(62 + 10*i, 10, 'ui', 17, this.hudGroup);
+			this.hearts[i] = this.game.add.sprite(62 + 10*i, 6, 'ui', 17, this.hudGroup);
 		}
 		this.scoreDigits = [];
 		this.score = 0;
 		for (var i = 0; i < 6; i++){
-			this.scoreDigits[i] = this.game.add.sprite(62 + 8*i, 20, 'ui', 0, this.hudGroup);
+			this.scoreDigits[i] = this.game.add.sprite(62 + 8*i, 14, 'ui', 0, this.hudGroup);
 		}
+		this.stageDigits = [];
+		for (var i = 0; i < 2; i++){
+			this.stageDigits[i] = this.game.add.sprite(62 + 8*i, 22, 'ui', 0, this.hudGroup);
+		}
+		this.hourDigits = [];
+		for (var i = 0; i < 2; i++){
+			this.hourDigits[i] = this.game.add.sprite(62 + 8*i, 30, 'ui', 0, this.hudGroup);
+		}
+		var colon = this.game.add.sprite(62 + 8*2, 30, 'ui', 10, this.hudGroup);
+		colon.animations.add('blink', [10,11], 2, true);
+		colon.animations.play('blink');
+		this.game.add.sprite(62 + 8*3, 30, 'ui', 0, this.hudGroup);
+		this.game.add.sprite(62 + 8*4, 30, 'ui', 0, this.hudGroup);
 		this.updateScore();
 		this.gameOverSprite = this.game.add.sprite(80, 29, 'gameOver', 0, this.hudGroup);
 		this.gameOverSprite.visible = false;
 		this.game.add.sprite(0, 0, 'bground', 0, this.backgroundGroup);
+		var lali = this.game.add.sprite(-1, 71, 'tileset', 20, this.backgroundGroup);
+		lali.animations.add('blink', [20,21], 2, true);
+		lali.animations.play('blink');
 		this.currentFoodSprite = this.game.add.sprite(8, 82, 'tileset', FOOD_TILES['milkShake'], this.backgroundGroup);
+
 		this.addBoundary(0,0,256,118);
 		this.addBoundary(0,195,256,45);
 		this.bar = this.addBoundary(240,109,16,87);
@@ -170,15 +189,6 @@ var CatCafe = {
 
 		this.stageSprites = [];
 
-		this.addObstacle('table', 32,108);
-		this.addObstacle('table', 80,108);
-		this.addObstacle('table', 128,108);
-		this.addObstacle('table', 176,108);
-
-		this.addObstacle('table', 64,140);
-		this.addObstacle('table', 112,140);
-		this.addObstacle('table', 160,140);
-		
 		this.addObstacle('chair', 217,108);
 		this.addObstacle('chair', 217,132);
 		this.addObstacle('chair', 217,156);
@@ -186,21 +196,44 @@ var CatCafe = {
 		Pera.init(this);
 		Shoey.init(this, 10, 208);
 		this.entities = [];
-		this.entities.push(Pera);
-		this.stageSprites.push(Pera.sprite);
-		//Add the 3 holy cats
-		for (var i = 0; i < 3; i++){
-			var cat = new HolyCat(this, Pera, 232, 124+i*24, Util.rand(0,3) * 32 + 64);
-			this.entities.push(cat);
-		}
-
-
-		for (var i = 0; i < 3; i++){
-			var cat = new Cat(this, Pera, Util.rand(32,227), Util.rand(120, 198), Util.rand(0,3) * 32 + 64);
-			this.entities.push(cat);
-			this.stageSprites.push(cat.sprite);
-		}
+		this.currentStage = 0;
+		this.setStage(0);
 		this.sortSpritesByDepth();
+		this.game.time.events.add(122*1000, this.endDay, this);
+	},
+	updateTime: function(){
+		this.hour++;
+		for (var i = 0; i < this.hourDigits.length; i++){
+			this.hourDigits[i].loadTexture('ui', 0);
+		}
+
+		var strHour = this.hour+"";
+		for (var i = 0; i < strHour.length; i++){
+			this.hourDigits[this.hourDigits.length-i-1].loadTexture('ui', parseInt(strHour.charAt(strHour.length-i-1)));
+			this.hourDigits[this.hourDigits.length-i-1].visible = true;
+		}
+		if (this.hour < 18)
+			this.game.time.events.add(12*1000, this.updateTime, this);
+	},
+	destroyStage: function(){
+		for (var i = 0; i < this.entities.length; i++){
+			if (this.entities[i] != Pera)
+				this.entities[i].sprite.destroy();
+			if (this.entities[i].destroy)
+				this.entities[i].destroy();
+		}
+		this.entities = [];
+		this.stageSprites = [];
+	},
+	endDay: function(){
+		this.destroyStage();
+		Pera.endStage();
+		this.game.time.events.add(3*1000, this.increaseStage, this);
+	},
+	increaseStage: function(){
+		this.currentStage++;
+		this.setStage(this.currentStage);
+		this.game.time.events.add(120*1000, this.endDay, this);
 	},
 	update: function(){
 		this.game.physics.arcade.collide(Pera.sprite, this.kitchen, hitKitchen, null, this);
@@ -244,6 +277,7 @@ var CatCafe = {
 	},
 	increaseScore: function(){
 		this.score += 100;
+
 		this.updateScore();
 		var cat = new Cat(this, Pera, Util.rand(32,227), Util.rand(120, 198), Util.rand(0,3) * 32 + 64);
 		this.entities.push(cat);
@@ -258,8 +292,86 @@ var CatCafe = {
 			this.scoreDigits[i].loadTexture('ui', parseInt(strScore.charAt(i)));
 			this.scoreDigits[i].visible = true;
 		}
+	},
+	updateStageNumber: function(){
+		for (var i = 0; i < this.stageDigits.length; i++){
+			this.stageDigits[i].visible = false;
+		}
+		var strStage = this.currentStage+"";
+		for (var i = 0; i < strStage.length; i++){
+			this.stageDigits[i].loadTexture('ui', parseInt(strStage.charAt(i)));
+			this.stageDigits[i].visible = true;
+		}
+	},
+	setStage: function(num){
+		this.entities.push(Pera);
+		this.stageSprites.push(Pera.sprite);
+		Pera.sprite.x = 20;
+		Pera.sprite.y = 140;
+		Pera.startStage();
+		this.updateStageNumber();
+		this.hour = 7;
+		this.updateTime();
+		if (num > stageMap.length - 1)
+			num = stageMap.length - 1;
+		var specs = stageMap[num];
+		// Vertical cats
+		for (var i = 0; i < specs.holyCats && i < 3; i++){
+			var cat = new HolyCat(this, Pera, 232, 124+i*24, Util.rand(0,3) * 32 + 64);
+			this.entities.push(cat);
+		}
+		// Horizontal Cats
+		for (; i < specs.holyCats; i++){
+			//TODO: Add horizontal cats
+		}
+
+		for (var i = 0; i < specs.cats; i++){
+			var cat = new Cat(this, Pera, Util.rand(32,227), Util.rand(120, 198), Util.rand(0,3) * 32 + 64);
+			this.entities.push(cat);
+			this.stageSprites.push(cat.sprite);
+		}
+		switch (specs.pattern){
+			case 1:
+				this.addObstacle('table', 80,108);
+				this.addObstacle('table', 176,108);
+				this.addObstacle('table', 64,140);
+				this.addObstacle('table', 160,140);
+			break;
+			case 2:
+				this.addObstacle('table', 32,108);
+				this.addObstacle('table', 80,108);
+				this.addObstacle('table', 128,108);
+				this.addObstacle('table', 176,108);
+				this.addObstacle('table', 64,140);
+				this.addObstacle('table', 112,140);
+				this.addObstacle('table', 160,140);
+			break;
+		}
 	}
 }
+
+var stageMap = [
+	{
+		cats: 3,
+		holyCats: 2,
+		pattern: 1
+	},
+	{
+		cats: 3,
+		holyCats: 2,
+		pattern: 1
+	},
+	{
+		cats: 4,
+		holyCats: 3,
+		pattern: 2
+	},
+	{
+		cats: 4,
+		holyCats: 3,
+		pattern: 2
+	},
+];
 
 window.CatCafe = CatCafe;
 

@@ -115,10 +115,10 @@ Cat.prototype = {
 		return this.target.currentFood && this._distanceToTarget() < 10;
 	},
 	getCloser: function(){
-		return this._distanceToTarget() > 20 && this._distanceToTarget() < 50;
+		return this.target.currentFood && this._distanceToTarget() > 20 && this._distanceToTarget() < 50;
 	},
 	getFarther: function(){
-		return this._distanceToTarget() < 5;
+		return this.target.currentFood && this._distanceToTarget() < 5;
 	},
 	getDirection: function(){
 		return {

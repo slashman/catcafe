@@ -1,5 +1,6 @@
 var Pera = require('./Pera');
 var Cat = require('./Cat.class');
+var HolyCat = require('./HolyCat.class');
 var Util = require('./Util');
 
 var PhaserStates = {
@@ -24,34 +25,51 @@ function dragCollide(obj1, obj2){
 	
 }
 
-function peraCollide(peraSprite, catSprite){
-	if (catSprite._cat.deadly){
-		if (Pera.currentFood)
-			Pera.dropFood();
+function peraCollide(peraSprite, sprite){
+	if (sprite._cat){
+		if (sprite._cat.deadly){
+			if (Pera.currentFood)
+				Pera.dropFood();
+		}
+		peraSprite.body.drag.x = 2000;
+		peraSprite.body.drag.y = 2000;
+		sprite.body.drag.x = 2000;
+		sprite.body.drag.y = 2000;
 	}
-	peraSprite.body.drag.x = 2000;
-	peraSprite.body.drag.y = 2000;
-	catSprite.body.drag.x = 2000;
-	catSprite.body.drag.y = 2000;
 }
 
-function hitBar(){
+function holyCatCollide(peraSprite, catSprite){
 	if (Pera.dead)
 		return;
-	if (!Pera.currentFood && CatCafe.currentFood){
-		switch (CatCafe.currentFood){
-			case 'milkShake':
+	if (Pera.currentFood){
+		catSprite._cat.giveFood();
+	}
+}
+
+function hitKitchen(){
+	if (Pera.dead)
+		return;
+	if (Pera.kitchenCounter++ < 24){
+		return;
+	}
+	Pera.kitchenCounter = 0;
+	switch(Pera.currentFood){
+		case false: case undefined:
 			Pera.pickMilkShake();
+			this.currentFoodSprite.loadTexture('tileset', FOOD_TILES['coffee']);
 			break;
-			case 'coffee':
+		case 'milkShake':
 			Pera.pickCoffee();
+			this.currentFoodSprite.loadTexture('tileset', FOOD_TILES['cake']);
 			break;
-			case 'cake':
+		case 'coffee':
 			Pera.pickCake();
+			this.currentFoodSprite.loadTexture('blank');
 			break;
-		}
-		CatCafe.currentFood = false;
-		CatCafe.currentFoodSprite.visible = false;
+		case 'cake':
+			Pera.pickNone();
+			this.currentFoodSprite.loadTexture('tileset', FOOD_TILES['milkShake']);
+			break;
 	}
 }
 
@@ -61,16 +79,26 @@ var FOOD_TILES = {
 	cake: 56
 };
 
+var SPECS = {
+	table: {
+		tile: 193,
+		w: 15,
+		h: 8,
+		xoff: 9,
+		yoff: 24
+	},
+	chair: {
+		tile: 194,
+		w: 13,
+		h: 7,
+		xoff: 9,
+		yoff: 25	
+	}
+} 
+
 var CatCafe = {
-	currentFood: false,
 	init: function(){
 		this.game = new Phaser.Game(256, 240, Phaser.AUTO, '', { preload: PhaserStates.preload, create: PhaserStates.create, update: PhaserStates.update }, false, false);
-	},
-	setFoodForCurrentOrder: function(){
-		var food = Util.randomElementOf(['cake', 'milkShake', 'coffee']);
-		this.currentFood = food;
-		this.currentFoodSprite.loadTexture('tileset', FOOD_TILES[food]);
-		this.currentFoodSprite.visible = true;
 	},
 	SFX_MAP: {},
 	playSFX: function(key){
@@ -84,7 +112,22 @@ var CatCafe = {
 		boundary.body.immovable = true;
 		return boundary;
 	},
+	resetFoodSprite: function(){
+		this.currentFoodSprite.loadTexture('tileset', FOOD_TILES['milkShake']);
+	},
+	addObstacle: function(type, x, y){
+		var specs = SPECS[type];
+		var boundary = this.game.add.sprite(x,y, 'tileset', specs.tile, this.entitiesGroup);
+		this.game.physics.arcade.enable(boundary);
+		boundary.body.setSize(specs.w, specs.h, specs.xoff, specs.yoff);
+		boundary.body.immovable = true;
+		boundary.ycomp = y + 32;
+		this.stageSprites.push(boundary);
+		return boundary;
+	},
 	reduceHearts: function(){
+		if (this.currentHeart <= 0)
+			return;
 		this.currentHeart--;
 		this.hearts[this.currentHeart].loadTexture('ui', 16);
 		if (this.currentHeart === 0){
@@ -96,6 +139,7 @@ var CatCafe = {
 		this.mainGroup = this.game.add.group();
 		this.backgroundGroup = this.game.add.group(this.mainGroup);
 		this.entitiesGroup = this.game.add.group(this.mainGroup);
+		this.holyCatsGroup = this.game.add.group(this.mainGroup);
 		this.boundariesGroup = this.game.add.group(this.mainGroup);
 		this.hudGroup = this.game.add.group();
 		this.hearts = [];
@@ -103,28 +147,56 @@ var CatCafe = {
 		for (var i = 0; i < 5; i++){
 			this.hearts[i] = this.game.add.sprite(62 + 10*i, 10, 'ui', 17, this.hudGroup);
 		}
+		this.scoreDigits = [];
+		this.score = 0;
+		for (var i = 0; i < 6; i++){
+			this.scoreDigits[i] = this.game.add.sprite(62 + 8*i, 20, 'ui', 0, this.hudGroup);
+		}
 		this.gameOverSprite = this.game.add.sprite(80, 29, 'gameOver', 0, this.hudGroup);
 		this.gameOverSprite.visible = false;
 		this.game.add.sprite(0, 0, 'bground', 0, this.backgroundGroup);
-		this.currentFoodSprite = this.game.add.sprite(230, 147, 'tileset', 0, this.backgroundGroup);
-		this.currentFoodSprite.visible = false;
+		this.currentFoodSprite = this.game.add.sprite(8, 82, 'tileset', FOOD_TILES['milkShake'], this.backgroundGroup);
 		this.addBoundary(0,0,256,118);
 		this.addBoundary(0,195,256,45);
-		this.bar = this.addBoundary(231,43,24,152);
-		this.addBoundary(0,118,24,16);
+		this.bar = this.addBoundary(240,109,16,87);
+		this.kitchen = this.addBoundary(10,97,25,21);
+
+		this.stageSprites = [];
+
+		this.addObstacle('table', 32,108);
+		this.addObstacle('table', 80,108);
+		this.addObstacle('table', 128,108);
+		this.addObstacle('table', 176,108);
+
+		this.addObstacle('table', 64,140);
+		this.addObstacle('table', 112,140);
+		this.addObstacle('table', 160,140);
+		
+		this.addObstacle('chair', 217,108);
+		this.addObstacle('chair', 217,132);
+		this.addObstacle('chair', 217,156);
+
 		Pera.init(this);
 		this.entities = [];
 		this.entities.push(Pera);
-		for (var i = 0; i < 10; i++){
-			var cat = new Cat(this, Pera, Util.rand(32,227), Util.rand(120, 198), Util.rand(0,1) * 32 + 64);
+		this.stageSprites.push(Pera.sprite);
+		//Add the 3 holy cats
+		for (var i = 0; i < 3; i++){
+			var cat = new HolyCat(this, Pera, 232, 124+i*24, Util.rand(0,3) * 32 + 64);
 			this.entities.push(cat);
 		}
-		Pera.sprite.bringToTop();
+
+
+		for (var i = 0; i < 3; i++){
+			var cat = new Cat(this, Pera, Util.rand(32,227), Util.rand(120, 198), Util.rand(0,3) * 32 + 64);
+			this.entities.push(cat);
+			this.stageSprites.push(cat.sprite);
+		}
 		this.sortSpritesByDepth();
-		this.setFoodForCurrentOrder();
 	},
 	update: function(){
-		this.game.physics.arcade.collide(Pera.sprite, this.bar, hitBar, null, this);
+		this.game.physics.arcade.collide(Pera.sprite, this.kitchen, hitKitchen, null, this);
+		this.game.physics.arcade.collide(Pera.sprite, this.holyCatsGroup, holyCatCollide, null, this);
 		this.game.physics.arcade.collide(this.entitiesGroup, this.boundariesGroup, null, null, this);
 		for (var i = 0; i < this.entities.length; i++){
 			if (!this.entities[i].sprite.body){
@@ -153,13 +225,28 @@ var CatCafe = {
 		return closest;
 	},
 	sortSpritesByDepth: function(){
-		this.entities.sort(function(a, b) {
-		    return a.sprite.y - b.sprite.y;
+		this.stageSprites.sort(function(a, b) {
+		    //return a.y - b.y;
+		    return (a.ycomp ? a.ycomp : a.y) - (b.ycomp ? b.ycomp : b.y);
 		});
-		for (var i = 0; i < this.entities.length; i++){
-			this.entities[i].sprite.bringToTop();
+		for (var i = 0; i < this.stageSprites.length; i++){
+			this.stageSprites[i].bringToTop();
 		}
 		this.game.time.events.add(500, this.sortSpritesByDepth, this);
+	},
+	increaseScore: function(){
+		this.score += 100;
+		for (var i = 0; i < this.scoreDigits.length; i++){
+			this.scoreDigits[i].visible = false;
+		}
+		var strScore = this.score+"";
+		for (var i = 0; i < strScore.length; i++){
+			this.scoreDigits[i].loadTexture('ui', parseInt(strScore.charAt(i)));
+			this.scoreDigits[i].visible = true;
+		}
+		var cat = new Cat(this, Pera, Util.rand(32,227), Util.rand(120, 198), Util.rand(0,3) * 32 + 64);
+		this.entities.push(cat);
+		this.stageSprites.push(cat.sprite);
 	}
 }
 

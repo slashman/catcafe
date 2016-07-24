@@ -5,6 +5,7 @@ var DESERT_FALLING = {
 };
 
 module.exports = {
+	kitchenCounter: 0,
 	init: function(catCafe){
 		this.catCafe = catCafe;
 		this.sprite = catCafe.game.add.sprite(40, 140, 'tileset', 0, catCafe.entitiesGroup);
@@ -53,6 +54,12 @@ module.exports = {
 		this.milkShakeSprite.visible = false;
 		this.currentFood = 'cake';
 	},
+	pickNone: function(){
+		this.cakeSprite.visible = false;
+		this.coffeeSprite.visible = false;
+		this.milkShakeSprite.visible = false;
+		this.currentFood = false;
+	},
 	dropFood: function(){
 		this.cakeSprite.visible = false;
 		this.coffeeSprite.visible = false;
@@ -64,8 +71,16 @@ module.exports = {
 		fallSprite.animations.add('fall', DESERT_FALLING[this.currentFood], 4, false);
 		fallSprite.animations.play('fall');
 		this.currentFood = false;
-		this.catCafe.setFoodForCurrentOrder();
+		this.catCafe.resetFoodSprite();
 		this.catCafe.reduceHearts();
+	},
+	deliverFood: function(){
+		this.cakeSprite.visible = false;
+		this.coffeeSprite.visible = false;
+		this.milkShakeSprite.visible = false;
+		this.currentFood = false;
+		this.catCafe.resetFoodSprite();
+		this.catCafe.increaseScore();
 	},
 	_flipSprite: function(){
 		this._flipped = !this._flipped;

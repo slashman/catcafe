@@ -20,7 +20,7 @@ var FOOD_TILES = {
 };
 
 
-function HolyCat(catCafe, pera, x, y, baseSprite){
+function HolyCat(catCafe, pera, x, y, baseSprite, vertical){
 	this.catCafe = catCafe;
 	this.target = pera;
 	this.sprite = catCafe.game.add.sprite(x, y, 'tileset', 0, catCafe.holyCatsGroup);
@@ -43,8 +43,12 @@ function HolyCat(catCafe, pera, x, y, baseSprite){
 	this.sprite.addChild(this.wantedFoodSprite);
 	this.wantedFoodSprite.visible = false;
 	this.wantedFoodSprite.anchor.setTo(0.85, 0.6);
-		
-	this.foodSprite = catCafe.game.add.sprite(x+16, y+16, 'tileset', 32, catCafe.holyCatsGroup);
+	
+	if (vertical){
+		this.foodSprite = catCafe.game.add.sprite(x, y+24, 'tileset', 32, catCafe.holyCatsGroup);
+	} else {
+		this.foodSprite = catCafe.game.add.sprite(x+16, y+16, 'tileset', 32, catCafe.holyCatsGroup);
+	}
 	this.foodSprite.anchor.setTo(0.5, 0.75);
 	this.foodSprite.visible = false;
 
@@ -109,6 +113,11 @@ HolyCat.prototype = {
 		this.wantedFood = false;
 		this.globe.visible = false;
 		this.wantedFoodSprite.visible = false;
+		
+		this.destroy();
+		this.sprite.destroy();
+		this.catCafe.busy[this.place] = false;
+		this.catCafe.placeHolyCat();
 	},
 	giveFood: function(){
 		if (this.dead)
@@ -130,6 +139,10 @@ HolyCat.prototype = {
 	finishEating: function(){
 		this.eating = false;
 		this.foodSprite.visible = false;
+		this.destroy();
+		this.sprite.destroy();
+		this.catCafe.busy[this.place] = false;
+		this.catCafe.placeHolyCat();
 	},
 	destroy: function(){
 		this.dead = true;

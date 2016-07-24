@@ -224,6 +224,7 @@ var CatCafe = {
 		}
 		this.entities = [];
 		this.stageSprites = [];
+		this.busy = {};
 	},
 	endDay: function(){
 		this.destroyStage();
@@ -303,6 +304,24 @@ var CatCafe = {
 			this.stageDigits[i].visible = true;
 		}
 	},
+	busy: {},
+	placeHolyCat: function(){
+		var place = Util.rand(0,6);
+		while (this.busy[place]){
+			place = Util.rand(0,6);
+		}
+		this.busy[place] = true;
+		if (place <= 2){
+			var cat = new HolyCat(this, Pera, 232, 124+place*24, Util.rand(0,3) * 32 + 64);
+			this.entities.push(cat);
+			cat.place = place;
+		} else {
+			place -= 2;
+			var cat = new HolyCat(this, Pera, 15+place*48, 192, Util.rand(0,3) * 32 + 64, true);
+			this.entities.push(cat);
+			cat.place = place + 2;
+		}
+	},
 	setStage: function(num){
 		this.entities.push(Pera);
 		this.stageSprites.push(Pera.sprite);
@@ -315,14 +334,8 @@ var CatCafe = {
 		if (num > stageMap.length - 1)
 			num = stageMap.length - 1;
 		var specs = stageMap[num];
-		// Vertical cats
-		for (var i = 0; i < specs.holyCats && i < 3; i++){
-			var cat = new HolyCat(this, Pera, 232, 124+i*24, Util.rand(0,3) * 32 + 64);
-			this.entities.push(cat);
-		}
-		// Horizontal Cats
-		for (; i < specs.holyCats; i++){
-			//TODO: Add horizontal cats
+		for (var i = 0; i < specs.holyCats; i++){
+			this.placeHolyCat();
 		}
 
 		for (var i = 0; i < specs.cats; i++){
@@ -353,22 +366,22 @@ var CatCafe = {
 var stageMap = [
 	{
 		cats: 3,
-		holyCats: 2,
+		holyCats: 4,
 		pattern: 1
 	},
 	{
 		cats: 3,
-		holyCats: 2,
+		holyCats: 4,
 		pattern: 1
 	},
 	{
 		cats: 4,
-		holyCats: 3,
+		holyCats: 5,
 		pattern: 2
 	},
 	{
 		cats: 4,
-		holyCats: 3,
+		holyCats: 6,
 		pattern: 2
 	},
 ];

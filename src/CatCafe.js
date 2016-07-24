@@ -1,4 +1,5 @@
 var Pera = require('./Pera');
+var Shoey = require('./Shoey');
 var Cat = require('./Cat.class');
 var HolyCat = require('./HolyCat.class');
 var Util = require('./Util');
@@ -183,6 +184,7 @@ var CatCafe = {
 		this.addObstacle('chair', 217,156);
 
 		Pera.init(this);
+		Shoey.init(this, 10, 208);
 		this.entities = [];
 		this.entities.push(Pera);
 		this.stageSprites.push(Pera.sprite);

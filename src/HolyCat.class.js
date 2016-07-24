@@ -15,7 +15,8 @@ var SPRITES = {
 var FOOD_TILES = {
 	milkShake: 32,
 	coffee: 40,
-	cake: 58
+	cake: 58,
+	puddin: 48
 };
 
 
@@ -80,7 +81,7 @@ HolyCat.prototype = {
 		return Math.random() > 0.7;
 	},
 	selectFood: function(){
-		this.wantedFood = Util.randomElementOf(['cake', 'milkShake', 'coffee']);
+		this.wantedFood = Util.randomElementOf(['cake', 'milkShake', 'coffee', 'puddin']);
 		this.thinkingOnFood = false;
 		this.grumpyTimer = this.catCafe.game.time.events.add(15000, this.warnGrumpy, this);
 		this.grumpyTimer = this.catCafe.game.time.events.add(20000, this.getGrumpy, this);

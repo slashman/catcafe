@@ -64,9 +64,13 @@ function hitKitchen(){
 			break;
 		case 'coffee':
 			Pera.pickCake();
-			this.currentFoodSprite.loadTexture('blank');
+			this.currentFoodSprite.loadTexture('tileset', FOOD_TILES['puddin']);
 			break;
 		case 'cake':
+			Pera.pickPuddin();
+			this.currentFoodSprite.loadTexture('blank');
+			break;
+		case 'puddin':
 			Pera.pickNone();
 			this.currentFoodSprite.loadTexture('tileset', FOOD_TILES['milkShake']);
 			break;
@@ -76,7 +80,8 @@ function hitKitchen(){
 var FOOD_TILES = {
 	milkShake: 32,
 	coffee: 40,
-	cake: 58
+	cake: 58,
+	puddin: 48
 };
 
 var SPECS = {

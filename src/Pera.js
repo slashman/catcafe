@@ -1,7 +1,8 @@
 var DESERT_FALLING = {
 	milkShake: [35, 36, 37, 38, 39],
 	coffee: [43, 44, 45, 46, 47],
-	cake: [59, 60, 61, 62, 63]
+	cake: [59, 60, 61, 62, 63],
+	puddin: [52, 53, 54, 55, 56, 57]
 };
 
 module.exports = {
@@ -31,8 +32,14 @@ module.exports = {
 		this.cakeSprite.anchor.setTo(0.1, 0.9);
 		this.cakeSprite.visible = false;
 
+		this.puddinSprite = catCafe.game.add.sprite(0, 0, 'tileset', 48, catCafe.entitiesGroup);
+		this.puddinSprite.animations.add('walk', [48, 49, 50, 51], 4, true);
+		this.puddinSprite.anchor.setTo(0.1, 0.9);
+		this.puddinSprite.visible = false;
+
 		this.sprite.addChild(this.milkShakeSprite);
 		this.sprite.addChild(this.coffeeSprite);
+		this.sprite.addChild(this.puddinSprite);
 		this.sprite.addChild(this.cakeSprite);
 
 		this.cursors = catCafe.game.input.keyboard.createCursorKeys();
@@ -41,30 +48,42 @@ module.exports = {
 		this.milkShakeSprite.visible = true;
 		this.coffeeSprite.visible = false;
 		this.cakeSprite.visible = false;
+		this.puddinSprite.visible = false;
 		this.currentFood = 'milkShake';
 	},
 	pickCoffee: function(){
 		this.coffeeSprite.visible = true;
 		this.milkShakeSprite.visible = false;
 		this.cakeSprite.visible = false;
+		this.puddinSprite.visible = false;
 		this.currentFood = 'coffee';
 	},
 	pickCake: function(){
 		this.cakeSprite.visible = true;
 		this.coffeeSprite.visible = false;
 		this.milkShakeSprite.visible = false;
+		this.puddinSprite.visible = false;
 		this.currentFood = 'cake';
+	},
+	pickPuddin: function(){
+		this.cakeSprite.visible = false;
+		this.coffeeSprite.visible = false;
+		this.puddinSprite.visible = true;
+		this.milkShakeSprite.visible = false;
+		this.currentFood = 'puddin';
 	},
 	pickNone: function(){
 		this.cakeSprite.visible = false;
 		this.coffeeSprite.visible = false;
 		this.milkShakeSprite.visible = false;
+		this.puddinSprite.visible = false;
 		this.currentFood = false;
 	},
 	dropFood: function(){
 		this.cakeSprite.visible = false;
 		this.coffeeSprite.visible = false;
 		this.milkShakeSprite.visible = false;
+		this.puddinSprite.visible = false;
 		var fallSprite = this.catCafe.game.add.sprite(this.sprite.x, this.sprite.y, 'tileset', DESERT_FALLING[this.currentFood][0], this.catCafe.backgroundGroup);
 		fallSprite.anchor.setTo(0.1, 0.9);
 		if (this._flipped)
@@ -85,6 +104,7 @@ module.exports = {
 		this.cakeSprite.visible = false;
 		this.coffeeSprite.visible = false;
 		this.milkShakeSprite.visible = false;
+		this.puddinSprite.visible = false;
 		this.currentFood = false;
 		this.catCafe.resetFoodSprite();
 		this.catCafe.increaseScore();
@@ -130,11 +150,13 @@ module.exports = {
 	    	this.sprite.animations.stop();
 	    	this.milkShakeSprite.animations.stop();
 	    	this.coffeeSprite.animations.stop();
+	    	this.puddinSprite.animations.stop();
 	    	this.cakeSprite.animations.stop();
 	    } else {
 	    	this.sprite.animations.play('walk');
 	    	this.milkShakeSprite.animations.play('walk');
 	    	this.coffeeSprite.animations.play('walk');
+	    	this.puddinSprite.animations.play('walk');
 	    	this.cakeSprite.animations.play('walk');
 	    }
 		

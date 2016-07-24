@@ -17,26 +17,32 @@ module.exports = {
 		this.sprite.animations.add('walk', [0, 1, 2, 3, 4, 5, 6, 7], 8, true);
 		this.sprite.animations.add('scared', [8, 9, 10], 8, false);
 		
+		this.binSprite = catCafe.game.add.sprite(0, 0, 'tileset', 16, catCafe.entitiesGroup);
+		this.binSprite.animations.add('walk', [16, 17, 18, 19, 18, 17], 8, true);
+		this.binSprite.anchor.setTo(0.4, 1.0);
+		this.binSprite.visible = true;
+
 		this.milkShakeSprite = catCafe.game.add.sprite(0, 0, 'tileset', 32, catCafe.entitiesGroup);
 		this.milkShakeSprite.animations.add('walk', [32, 33], 4, true);
-		this.milkShakeSprite.anchor.setTo(0.1, 0.9);
+		this.milkShakeSprite.anchor.setTo(0.15, 0.85);
 		this.milkShakeSprite.visible = false;
 		
 		this.coffeeSprite = catCafe.game.add.sprite(0, 0, 'tileset', 40, catCafe.entitiesGroup);
 		this.coffeeSprite.animations.add('walk', [40, 41, 42], 4, true);
-		this.coffeeSprite.anchor.setTo(0.1, 0.9);
+		this.coffeeSprite.anchor.setTo(0.1, 0.85);
 		this.coffeeSprite.visible = false;
 
 		this.cakeSprite = catCafe.game.add.sprite(0, 0, 'tileset', 58, catCafe.entitiesGroup);
 		this.cakeSprite.animations.add('walk', [58], 4, true);
-		this.cakeSprite.anchor.setTo(0.1, 0.9);
+		this.cakeSprite.anchor.setTo(0.1, 0.85);
 		this.cakeSprite.visible = false;
 
 		this.puddinSprite = catCafe.game.add.sprite(0, 0, 'tileset', 48, catCafe.entitiesGroup);
 		this.puddinSprite.animations.add('walk', [48, 49, 50, 51], 4, true);
-		this.puddinSprite.anchor.setTo(0.1, 0.9);
+		this.puddinSprite.anchor.setTo(0.1, 0.85);
 		this.puddinSprite.visible = false;
 
+		this.sprite.addChild(this.binSprite);
 		this.sprite.addChild(this.milkShakeSprite);
 		this.sprite.addChild(this.coffeeSprite);
 		this.sprite.addChild(this.puddinSprite);
@@ -47,6 +53,7 @@ module.exports = {
 	pickMilkShake: function(){
 		this.milkShakeSprite.visible = true;
 		this.coffeeSprite.visible = false;
+		this.binSprite.visible = true;
 		this.cakeSprite.visible = false;
 		this.puddinSprite.visible = false;
 		this.currentFood = 'milkShake';
@@ -56,6 +63,7 @@ module.exports = {
 		this.milkShakeSprite.visible = false;
 		this.cakeSprite.visible = false;
 		this.puddinSprite.visible = false;
+		this.binSprite.visible = true;
 		this.currentFood = 'coffee';
 	},
 	pickCake: function(){
@@ -63,6 +71,7 @@ module.exports = {
 		this.coffeeSprite.visible = false;
 		this.milkShakeSprite.visible = false;
 		this.puddinSprite.visible = false;
+		this.binSprite.visible = true;
 		this.currentFood = 'cake';
 	},
 	pickPuddin: function(){
@@ -70,6 +79,7 @@ module.exports = {
 		this.coffeeSprite.visible = false;
 		this.puddinSprite.visible = true;
 		this.milkShakeSprite.visible = false;
+		this.binSprite.visible = true;
 		this.currentFood = 'puddin';
 	},
 	pickNone: function(){
@@ -82,6 +92,7 @@ module.exports = {
 	dropFood: function(){
 		this.cakeSprite.visible = false;
 		this.coffeeSprite.visible = false;
+		this.binSprite.visible = false;
 		this.milkShakeSprite.visible = false;
 		this.puddinSprite.visible = false;
 		var fallSprite = this.catCafe.game.add.sprite(this.sprite.x, this.sprite.y, 'tileset', DESERT_FALLING[this.currentFood][0], this.catCafe.backgroundGroup);
@@ -103,6 +114,7 @@ module.exports = {
 	deliverFood: function(){
 		this.cakeSprite.visible = false;
 		this.coffeeSprite.visible = false;
+		this.binSprite.visible = false;
 		this.milkShakeSprite.visible = false;
 		this.puddinSprite.visible = false;
 		this.currentFood = false;
@@ -150,12 +162,15 @@ module.exports = {
 	    	this.sprite.animations.stop();
 	    	this.milkShakeSprite.animations.stop();
 	    	this.coffeeSprite.animations.stop();
+	    	this.binSprite.animations.stop();
+	    	this.binSprite.frame = 16;
 	    	this.puddinSprite.animations.stop();
 	    	this.cakeSprite.animations.stop();
 	    } else {
 	    	this.sprite.animations.play('walk');
 	    	this.milkShakeSprite.animations.play('walk');
 	    	this.coffeeSprite.animations.play('walk');
+	    	this.binSprite.animations.play('walk');
 	    	this.puddinSprite.animations.play('walk');
 	    	this.cakeSprite.animations.play('walk');
 	    }

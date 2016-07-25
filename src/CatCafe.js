@@ -364,7 +364,7 @@ var CatCafe = {
 			num = stageMap.length - 1;
 		var specs = stageMap[num];
 		for (var i = 0; i < specs.holyCats; i++){
-			this.placeHolyCat();
+			this.game.time.events.add(i*5000, this.placeHolyCat, this);
 		}
 
 		for (var i = 0; i < specs.cats; i++){

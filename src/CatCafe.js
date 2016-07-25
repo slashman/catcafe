@@ -149,7 +149,6 @@ var CatCafe = {
 		this.cityGroup = this.game.add.group(this.mainGroup);
 		this.backgroundGroup = this.game.add.group(this.mainGroup);
 		this.entitiesGroup = this.game.add.group(this.mainGroup);
-		this.holyCatsGroup = this.game.add.group(this.mainGroup);
 		this.boundariesGroup = this.game.add.group(this.mainGroup);
 		this.hudGroup = this.game.add.group();
 		this.hearts = [];
@@ -246,6 +245,7 @@ var CatCafe = {
 			if (this.entities[i].destroy)
 				this.entities[i].destroy();
 		}
+		this.holyCatsGroup.destroy(true);
 		this.entities = [];
 		this.stageSprites = [];
 		this.busy = {};
@@ -351,6 +351,7 @@ var CatCafe = {
 		}
 	},
 	setStage: function(num){
+		this.holyCatsGroup = this.game.add.group(this.mainGroup);
 		this.entities.push(Pera);
 		this.stageSprites.push(Pera.sprite);
 		Pera.sprite.x = 20;

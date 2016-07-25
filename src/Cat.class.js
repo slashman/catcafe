@@ -143,6 +143,8 @@ Cat.prototype = {
 		this.deadly = false;
 	},
 	_resetMovement: function(){
+		if (this.dead || this.target.dead)
+			return;
 		this.sprite.animations.play('idle');
 		this.sprite.body.velocity.x = 0;
 		this.attacking = false;

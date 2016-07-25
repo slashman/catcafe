@@ -42,6 +42,8 @@ Cat.prototype = {
 		}
 		if (this.catCafe.gameOver){
 			this.sprite.animations.play('idle');
+			this.sprite.body.velocity.x = 0;
+    		this.sprite.body.velocity.y = 0;	
 			return;
 		}
 		this.sprite.body.drag.x = 0;
@@ -112,11 +114,14 @@ Cat.prototype = {
 	_distanceToTarget: function(){
 		return Util.distance(this.sprite.x, this.sprite.y, this.target.sprite.x, this.target.sprite.y);
 	},
+	safeTarget: function(){
+		return Util.distance(this.target.sprite.x, this.target.sprite.y, 24, 90) < 50;
+	},
 	shouldAttack: function(){
-		return !this.target.dead && this.target.currentFood && this._distanceToTarget() < 15;
+		return !this.safeTarget() && !this.target.dead && this.target.currentFood && this._distanceToTarget() < 15;
 	},
 	getCloser: function(){
-		return !this.target.dead && this.target.currentFood && this._distanceToTarget() > 15 && this._distanceToTarget() < 60;
+		return !this.safeTarget() && !this.target.dead && this.target.currentFood && this._distanceToTarget() > 15 && this._distanceToTarget() < 60;
 	},
 	
 	getDirection: function(){

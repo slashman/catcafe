@@ -88,7 +88,7 @@ HolyCat.prototype = {
 		return Math.random() > 0.7;
 	},
 	selectFood: function(){
-		if (this.dead)
+		if (this.dead || this.target.dead)
 			return;
 		this.wantedFood = Util.randomElementOf(['cake', 'milkShake', 'coffee', 'puddin']);
 		this.thinkingOnFood = false;
@@ -101,12 +101,12 @@ HolyCat.prototype = {
 		this.wantedFoodSprite.visible = true;
 	},
 	warnGrumpy: function(){
-		if (this.dead)
+		if (this.dead || this.target.dead)
 			return;
 		this.globe.animations.play('blink');
 	},
 	getGrumpy: function(){
-		if (this.dead)
+		if (this.dead || this.target.dead)
 			return;
 		//this.sprite.animations.play('grumpy');
 		this.catCafe.reduceHearts();
@@ -120,7 +120,7 @@ HolyCat.prototype = {
 		this.catCafe.placeHolyCat();
 	},
 	giveFood: function(){
-		if (this.dead)
+		if (this.dead || this.target.dead)
 			return;
 		var foodType = this.target.currentFood;
 		if (foodType && foodType === this.wantedFood){
@@ -137,6 +137,8 @@ HolyCat.prototype = {
 		}
 	},
 	finishEating: function(){
+		if (this.dead)
+			return;
 		this.eating = false;
 		this.foodSprite.visible = false;
 		this.destroy();

@@ -13,6 +13,13 @@ var Util = {
 	},
 	noop: function(){
 		return true;
+	},
+	addToArray: function(array, val){
+		var ret = [];
+		for (var i = 0; i < array.length; i++){
+			ret[i] = array[i]+val;
+		}
+		return ret;
 	}
 }
 

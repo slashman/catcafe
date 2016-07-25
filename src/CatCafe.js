@@ -7,6 +7,7 @@ var Util = require('./Util');
 var PhaserStates = {
 	preload: function() {
 		this.game.load.image('bground', 'img/bground.png');
+		this.game.load.image('city', 'img/city.png');
 		this.game.load.image('blank', 'img/blank.png');
 		this.game.load.image('gameOver', 'img/gameOver.png');
 		this.game.load.spritesheet('tileset', 'img/tileset.png', 32, 32);
@@ -145,6 +146,7 @@ var CatCafe = {
 	},
 	start: function(){
 		this.mainGroup = this.game.add.group();
+		this.cityGroup = this.game.add.group(this.mainGroup);
 		this.backgroundGroup = this.game.add.group(this.mainGroup);
 		this.entitiesGroup = this.game.add.group(this.mainGroup);
 		this.holyCatsGroup = this.game.add.group(this.mainGroup);
@@ -174,8 +176,9 @@ var CatCafe = {
 		this.game.add.sprite(62 + 8*3, 30, 'ui', 0, this.hudGroup);
 		this.game.add.sprite(62 + 8*4, 30, 'ui', 0, this.hudGroup);
 		this.updateScore();
-		this.gameOverSprite = this.game.add.sprite(80, 29, 'gameOver', 0, this.hudGroup);
+		this.gameOverSprite = this.game.add.sprite(100, 29, 'gameOver', 0, this.hudGroup);
 		this.gameOverSprite.visible = false;
+		this.game.add.sprite(0, 0, 'city', 0, this.cityGroup);
 		this.game.add.sprite(0, 0, 'bground', 0, this.backgroundGroup);
 		var lali = this.game.add.sprite(-1, 71, 'tileset', 20, this.backgroundGroup);
 		lali.animations.add('blink', [20,21], 2, true);
@@ -200,6 +203,27 @@ var CatCafe = {
 		this.setStage(0);
 		this.sortSpritesByDepth();
 		this.game.time.events.add(122*1000, this.endDay, this);
+
+		this.wanderingCat = this.game.add.sprite(150, 70, 'tileset', 0, this.cityGroup);
+		this.game.physics.arcade.enable(this.wanderingCat);
+		this.setWanderingCat();
+	},
+	setWanderingCat: function(){
+		var leftToRight = Math.random() > 0.5;
+		var baseSprite = Util.rand(0,3) * 32 + 64;
+		this.wanderingCat.y = Util.rand(60, 80);
+		if (leftToRight){
+			this.wanderingCat.x = Util.rand(130, 150);
+			this.wanderingCat.body.velocity.x = Util.rand(30, 60);
+			this.wanderingCat.scale.x = 1;
+		} else {
+			this.wanderingCat.x = Util.rand(270, 280)	
+			this.wanderingCat.body.velocity.x = -1 * Util.rand(30, 60);
+			this.wanderingCat.scale.x = -1;
+		}
+		this.wanderingCat.animations.add('walk', Util.addToArray([18, 19, 20, 21, 22, 23, 24, 25], baseSprite), 6, true);
+		this.wanderingCat.animations.play('walk');
+		this.game.time.events.add(Util.rand(8,12)*1000, this.setWanderingCat, this);
 	},
 	updateTime: function(){
 		this.hour++;
@@ -227,11 +251,15 @@ var CatCafe = {
 		this.busy = {};
 	},
 	endDay: function(){
+		if (Pera.dead)
+			return;
 		this.destroyStage();
 		Pera.endStage();
 		this.game.time.events.add(3*1000, this.increaseStage, this);
 	},
 	increaseStage: function(){
+		if (Pera.dead)
+			return;
 		this.currentStage++;
 		this.setStage(this.currentStage);
 		this.game.time.events.add(120*1000, this.endDay, this);
@@ -280,7 +308,7 @@ var CatCafe = {
 		this.score += 100;
 
 		this.updateScore();
-		var cat = new Cat(this, Pera, Util.rand(32,227), Util.rand(120, 198), Util.rand(0,3) * 32 + 64);
+		var cat = new Cat(this, Pera, Util.rand(32,227), Util.rand(120, 168), Util.rand(0,3) * 32 + 64);
 		this.entities.push(cat);
 		this.stageSprites.push(cat.sprite);
 	},

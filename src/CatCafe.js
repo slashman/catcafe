@@ -6,6 +6,10 @@ var Util = require('./Util');
 
 var PhaserStates = {
 	preload: function() {
+		if (!this.game.device.desktop){
+			this.game.load.script('joystick', 'phaser-virtual-joystick.min.js');
+			this.game.load.atlas('dpad', 'img/dpad.png', 'dpad.json');
+		}
 		this.game.load.image('bground', 'img/bground.png');
 		this.game.load.image('city', 'img/city.png');
 		this.game.load.image('blank', 'img/blank.png');
@@ -145,6 +149,9 @@ var CatCafe = {
 		}
 	},
 	start: function(){
+		if (!this.game.device.desktop){
+			this.game.scale.setGameSize(256, 340);
+		}
 		this.mainGroup = this.game.add.group();
 		this.cityGroup = this.game.add.group(this.mainGroup);
 		this.backgroundGroup = this.game.add.group(this.mainGroup);

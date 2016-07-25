@@ -49,6 +49,15 @@ module.exports = {
 		this.sprite.addChild(this.cakeSprite);
 
 		this.cursors = catCafe.game.input.keyboard.createCursorKeys();
+		if (!catCafe.game.device.desktop){
+			this.initDPad();
+		}
+	},
+	initDPad: function(){
+		this.pad = this.catCafe.game.plugins.add(Phaser.VirtualJoystick);
+		this.stick = this.pad.addDPad(0, 0, 20, 'dpad');
+		this.stick.scale = 0.65;
+        this.stick.alignBottomLeft(0);
 	},
 	pickMilkShake: function(){
 		this.milkShakeSprite.visible = true;
@@ -125,6 +134,18 @@ module.exports = {
 		this._flipped = !this._flipped;
 		this.sprite.scale.x *= -1;
 	},
+	isLeftDown: function(){
+		return this.cursors.left.isDown || (this.stick && this.stick.isDown && this.stick.direction === Phaser.LEFT);
+	},
+	isRightDown: function(){
+		return this.cursors.right.isDown || (this.stick && this.stick.isDown && this.stick.direction === Phaser.RIGHT);
+	},
+	isUpDown: function(){
+		return this.cursors.up.isDown || (this.stick && this.stick.isDown && this.stick.direction === Phaser.UP);
+	},
+	isDownDown: function(){
+		return this.cursors.down.isDown || (this.stick && this.stick.isDown && this.stick.direction === Phaser.DOWN);
+	},
 	update: function(){
 		if (this.dead || this.scared){
 			return;
@@ -132,13 +153,13 @@ module.exports = {
 		this.sprite.body.drag.x = 0;
 		this.sprite.body.drag.y = 0;
 		var idle = true;
-		if (this.cursors.left.isDown) {
+		if (this.isLeftDown()) {
 			idle = false;
 	        this.sprite.body.velocity.x = -60;
 	        if (!this._flipped){
 	        	this._flipSprite();
 	        }
-	    } else if (this.cursors.right.isDown) {
+	    } else if (this.isRightDown()) {
 	    	idle = false;
 	        this.sprite.body.velocity.x = 60;
 	        if (this._flipped){
@@ -148,10 +169,10 @@ module.exports = {
 	    	this.sprite.body.velocity.x = 0;
 	    }
 		
-	    if (this.cursors.up.isDown) {
+	    if (this.isUpDown()) {
 	    	idle = false;
 	        this.sprite.body.velocity.y = -40;
-	    } else if (this.cursors.down.isDown) {
+	    } else if (this.isDownDown()) {
 	    	idle = false;
 	    	this.sprite.body.velocity.y = 40;
 	    } else {

@@ -14,7 +14,7 @@ var SPRITES = {
 	IDLE: [9, 10, 11, 12, 13, 14],
 	IDLE_2_WALK: [16, 17], 
 	WALK: [18, 19, 20, 21, 22, 23, 24, 25]
-}
+} 
 
 function Cat(catCafe, pera, x, y, baseSprite){
 	this.catCafe = catCafe;
@@ -41,6 +41,7 @@ Cat.prototype = {
 			return;
 		}
 		if (this.catCafe.gameOver){
+			this.sprite.animations.play('idle');
 			return;
 		}
 		this.sprite.body.drag.x = 0;
@@ -48,10 +49,6 @@ Cat.prototype = {
 		if (this.attacking){
 
 		} else if (this.shouldAttack()){
-			if ( (this.target.sprite.x > this.sprite.x && this._flipped) || 
-				 (this.target.sprite.x < this.sprite.x && !this._flipped) ){
-				this._flipSprite();
-			}
 			this.attacking = true;
 			this.sprite.animations.play('prepareAttack' );
 			this.sprite.body.velocity.x = 0;
@@ -64,25 +61,22 @@ Cat.prototype = {
 			this.catCafe.game.time.events.add(7*125 , this._resetDeadly, this);
 			this.catCafe.game.time.events.add(9*125, this._resetMovement, this);
 		} else {
-			if ( (this.target.sprite.x > this.sprite.x && this._flipped) || 
-				 (this.target.sprite.x < this.sprite.x && !this._flipped) ){
-				this._flipSprite();
-			}
-
 			var idle = true;
 			if (this.getCloser()) {
 				idle = false;
 				var vectors = this.getDirection();
 		        this.sprite.body.velocity.x = vectors.x * (30+ Util.rand(0,20));
 		        this.sprite.body.velocity.y = vectors.y * 20;
-		    } else if (this.getFarther()){
-		    	idle = false;
-				var vectors = this.getDirection();
-		        this.sprite.body.velocity.x = vectors.x * 40 * -1;
-		        this.sprite.body.velocity.y = vectors.y * 20 * -1;
 		    } else {
-		    	this.sprite.body.velocity.x = 0;
-		    	this.sprite.body.velocity.y = 0;
+		    	// Stay idle or wander around
+		    	if (Math.random() > 0.9){
+		    		idle = false;
+		    		this.sprite.body.velocity.x = (Math.random() > 0.5 ? 1 : -1) * (30+ Util.rand(0,20));
+		        	this.sprite.body.velocity.y = 0;
+		    	} else {
+		    		this.sprite.body.velocity.x = 0;
+		    		this.sprite.body.velocity.y = 0;	
+		    	}
 		    }
 		    if (idle){
 		    	this.sprite.animations.play('idle');
@@ -97,6 +91,10 @@ Cat.prototype = {
 		    		}	
 		    	}
 		    }
+		}
+		if ((this.sprite.body.velocity.x > 0 && this._flipped) || 
+			(this.sprite.body.velocity.x < 0 && !this._flipped)){
+			this._flipSprite();
 		}
 	},
 	_flipSprite: function(){
@@ -115,14 +113,12 @@ Cat.prototype = {
 		return Util.distance(this.sprite.x, this.sprite.y, this.target.sprite.x, this.target.sprite.y);
 	},
 	shouldAttack: function(){
-		return this.target.currentFood && this._distanceToTarget() < 10;
+		return !this.target.dead && this.target.currentFood && this._distanceToTarget() < 15;
 	},
 	getCloser: function(){
-		return this.target.currentFood && this._distanceToTarget() > 20 && this._distanceToTarget() < 50;
+		return !this.target.dead && this.target.currentFood && this._distanceToTarget() > 15 && this._distanceToTarget() < 60;
 	},
-	getFarther: function(){
-		return this.target.currentFood && this._distanceToTarget() < 5;
-	},
+	
 	getDirection: function(){
 		return {
 			x: Math.sign(this.target.sprite.x - this.sprite.x),
@@ -138,6 +134,10 @@ Cat.prototype = {
         this.sprite.body.velocity.x = this.attackVector.x * (50+Util.rand(0,20));
         this.sprite.body.velocity.y = this.attackVector.y * 20;
 		this.sprite.animations.play('jump');
+		if ((this.sprite.body.velocity.x > 0 && this._flipped) || 
+			(this.sprite.body.velocity.x < 0 && !this._flipped)){
+			this._flipSprite();
+		}
 	},
 	_resetDeadly: function(){
 		this.deadly = false;

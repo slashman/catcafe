@@ -14,11 +14,12 @@ module.exports = {
 		catCafe.game.physics.arcade.enable(this.sprite);
 		this.sprite.body.collideWorldBounds = true;
 		this.sprite.body.setSize(14, 7, 9, 25);
-		this.sprite.animations.add('walk', [0, 1, 2, 3, 4, 5, 6, 7], 8, true);
+		this.sprite.animations.add('walk-tray', [0, 1, 2, 3, 4, 5, 6, 7], 8, true);
+		this.sprite.animations.add('walk', [16, 17, 18, 19, 20, 21, 22, 23], 8, true);
 		this.sprite.animations.add('scared', [8, 9, 10], 8, false);
 		
-		this.binSprite = catCafe.game.add.sprite(0, 0, 'tileset', 16, catCafe.entitiesGroup);
-		this.binSprite.animations.add('walk', [16, 17, 18, 19, 18, 17], 8, true);
+		this.binSprite = catCafe.game.add.sprite(0, 0, 'tileset', 197, catCafe.entitiesGroup);
+		this.binSprite.animations.add('walk', [197, 198, 199, 200, 199, 198], 8, true);
 		this.binSprite.anchor.setTo(0.4, 1.0);
 		this.binSprite.visible = true;
 
@@ -181,7 +182,11 @@ module.exports = {
 	    if (idle){
 	    	this.stop();
 	    } else {
-	    	this.sprite.animations.play('walk');
+	    	if (this.binSprite.visible){
+	    		this.sprite.animations.play('walk-tray');
+	    	} else {
+	    	   	this.sprite.animations.play('walk');
+	    	}
 	    	this.milkShakeSprite.animations.play('walk');
 	    	this.coffeeSprite.animations.play('walk');
 	    	this.binSprite.animations.play('walk');
@@ -192,19 +197,25 @@ module.exports = {
 	},
 	kill: function(){
 		this.dead = true;
-		this.sprite.frame = 0;
+		if (this.binSprite.visible)
+			this.sprite.frame = 0;
+		else
+			this.sprite.frame = 16;
 		this.sprite.body.velocity.x = 0;
 		this.sprite.body.velocity.y = 0;
     	this.sprite.animations.stop();
 	    	
 	},
 	stop: function(){
-		this.sprite.frame = 0;
+		if (this.binSprite.visible)
+			this.sprite.frame = 0;
+		else
+			this.sprite.frame = 16;
     	this.sprite.animations.stop();
     	this.milkShakeSprite.animations.stop();
     	this.coffeeSprite.animations.stop();
     	this.binSprite.animations.stop();
-    	this.binSprite.frame = 16;
+    	this.binSprite.frame = 197;
     	this.puddinSprite.animations.stop();
     	this.cakeSprite.animations.stop();
 	},

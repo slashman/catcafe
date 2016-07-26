@@ -186,8 +186,8 @@ var CatCafe = {
 		this.gameOverSprite.visible = false;
 		this.game.add.sprite(0, 0, 'city', 0, this.cityGroup);
 		this.game.add.sprite(0, 0, 'bground', 0, this.backgroundGroup);
-		var lali = this.game.add.sprite(-1, 71, 'tileset', 20, this.backgroundGroup);
-		lali.animations.add('blink', [20,21], 2, true);
+		var lali = this.game.add.sprite(-1, 71, 'tileset', 203, this.backgroundGroup);
+		lali.animations.add('blink', [201,202], 2, true);
 		lali.animations.play('blink');
 		this.currentFoodSprite = this.game.add.sprite(8, 82, 'tileset', FOOD_TILES['milkShake'], this.backgroundGroup);
 

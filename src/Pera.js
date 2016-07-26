@@ -17,6 +17,7 @@ module.exports = {
 		this.sprite.animations.add('walk-tray', [0, 1, 2, 3, 4, 5, 6, 7], 8, true);
 		this.sprite.animations.add('walk', [16, 17, 18, 19, 20, 21, 22, 23], 8, true);
 		this.sprite.animations.add('scared', [8, 9, 10], 8, false);
+		this.sprite.animations.add('cry', [11, 12], 4, true);
 		
 		this.binSprite = catCafe.game.add.sprite(0, 0, 'tileset', 197, catCafe.entitiesGroup);
 		this.binSprite.animations.add('walk', [197, 198, 199, 200, 199, 198], 8, true);
@@ -197,14 +198,9 @@ module.exports = {
 	},
 	kill: function(){
 		this.dead = true;
-		if (this.binSprite.visible)
-			this.sprite.frame = 0;
-		else
-			this.sprite.frame = 16;
 		this.sprite.body.velocity.x = 0;
 		this.sprite.body.velocity.y = 0;
-    	this.sprite.animations.stop();
-	    	
+		this.sprite.animations.play('cry');
 	},
 	stop: function(){
 		if (this.binSprite.visible)

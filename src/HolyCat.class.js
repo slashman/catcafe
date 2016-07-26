@@ -9,7 +9,8 @@ function addToArray(array, val){
 }
 
 var SPRITES = {
-	IDLE: [9, 10, 11, 12, 13, 14]
+	IDLE: [9, 10, 11, 12, 13, 14],
+	MEOW: [26, 27, 28, 29, 28, 27]
 }
 
 var FOOD_TILES = {
@@ -21,6 +22,7 @@ var FOOD_TILES = {
 
 
 function HolyCat(catCafe, pera, x, y, baseSprite, vertical){
+	this.meows = baseSprite === 160; //TODO All cats meow
 	this.catCafe = catCafe;
 	this.target = pera;
 	this.sprite = catCafe.game.add.sprite(x, y, 'tileset', 0, catCafe.holyCatsGroup);
@@ -30,8 +32,13 @@ function HolyCat(catCafe, pera, x, y, baseSprite, vertical){
 	this.sprite.body.immovable = true;
 	this.sprite.body.setSize(8, 3, 11, 23);
 	this.sprite.animations.add('idle', addToArray(SPRITES.IDLE, baseSprite), 6, true);
-	this.sprite.animations.play('idle');
 	this.framesToReact = 0;
+
+	if (this.meows){
+		this.sprite.animations.add('meow', addToArray(SPRITES.MEOW, baseSprite), 6, true);
+	}
+
+	this.sprite.animations.play('idle');
 
 	this.globe = catCafe.game.add.sprite(0, 0, 'tileset', 195, catCafe.holyCatsGroup);
 	this.sprite.addChild(this.globe);
@@ -104,6 +111,8 @@ HolyCat.prototype = {
 		if (this.dead || this.target.dead)
 			return;
 		this.globe.animations.play('blink');
+		if (this.meows)
+			this.sprite.animations.play('meow');
 	},
 	getGrumpy: function(){
 		if (this.dead || this.target.dead)
@@ -124,6 +133,7 @@ HolyCat.prototype = {
 			return;
 		var foodType = this.target.currentFood;
 		if (foodType && foodType === this.wantedFood){
+			this.sprite.animations.play('idle');
 			this.catCafe.game.time.events.remove(this.grumpyTimer);
 			this.target.deliverFood();
 			this.wantedFood = false;
@@ -137,7 +147,7 @@ HolyCat.prototype = {
 		}
 	},
 	finishEating: function(){
-		if (this.dead)
+		if (this.dead || this.target.dead)
 			return;
 		this.eating = false;
 		this.foodSprite.visible = false;

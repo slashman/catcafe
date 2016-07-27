@@ -341,6 +341,8 @@ var CatCafe = {
 	},
 	busy: {},
 	placeHolyCat: function(){
+		if (!this.holyCatsGroup.exists)
+			return;
 		var place = Util.rand(0,6);
 		while (this.busy[place]){
 			place = Util.rand(0,6);

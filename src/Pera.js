@@ -100,7 +100,7 @@ module.exports = {
 		this.puddinSprite.visible = false;
 		this.currentFood = false;
 	},
-	dropFood: function(){
+	dropTheFood: function(){
 		this.cakeSprite.visible = false;
 		this.coffeeSprite.visible = false;
 		this.binSprite.visible = false;
@@ -112,6 +112,9 @@ module.exports = {
 			fallSprite.scale.x *= -1;
 		fallSprite.animations.add('fall', DESERT_FALLING[this.currentFood], 4, false);
 		fallSprite.animations.play('fall');
+	},
+	dropFood: function(){
+		this.dropTheFood();
 		this.sprite.animations.play('scared');
 		this.scared = true;
 		this.catCafe.game.time.events.add(1000, this.recoverMovement, this);
@@ -198,6 +201,8 @@ module.exports = {
 	},
 	kill: function(){
 		this.dead = true;
+		if (this.currentFood)
+			this.dropTheFood();
 		this.sprite.body.velocity.x = 0;
 		this.sprite.body.velocity.y = 0;
 		this.sprite.animations.play('cry');

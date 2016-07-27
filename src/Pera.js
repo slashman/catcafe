@@ -97,28 +97,24 @@ module.exports = {
 		this.cakeSprite.visible = false;
 		this.coffeeSprite.visible = false;
 		this.milkShakeSprite.visible = false;
+		this.binSprite.visible = false;
 		this.puddinSprite.visible = false;
 		this.currentFood = false;
 	},
 	dropTheFood: function(){
-		this.cakeSprite.visible = false;
-		this.coffeeSprite.visible = false;
-		this.binSprite.visible = false;
-		this.milkShakeSprite.visible = false;
-		this.puddinSprite.visible = false;
 		var fallSprite = this.catCafe.game.add.sprite(this.sprite.x, this.sprite.y, 'tileset', DESERT_FALLING[this.currentFood][0], this.catCafe.backgroundGroup);
 		fallSprite.anchor.setTo(0.1, 0.9);
 		if (this._flipped)
 			fallSprite.scale.x *= -1;
 		fallSprite.animations.add('fall', DESERT_FALLING[this.currentFood], 4, false);
 		fallSprite.animations.play('fall');
+		this.pickNone();
 	},
 	dropFood: function(){
 		this.dropTheFood();
 		this.sprite.animations.play('scared');
 		this.scared = true;
 		this.catCafe.game.time.events.add(1000, this.recoverMovement, this);
-		this.currentFood = false;
 		this.catCafe.resetFoodSprite();
 		this.catCafe.reduceHearts();
 	},
@@ -126,12 +122,7 @@ module.exports = {
 		this.scared = false;
 	},
 	deliverFood: function(){
-		this.cakeSprite.visible = false;
-		this.coffeeSprite.visible = false;
-		this.binSprite.visible = false;
-		this.milkShakeSprite.visible = false;
-		this.puddinSprite.visible = false;
-		this.currentFood = false;
+		this.pickNone();
 		this.catCafe.resetFoodSprite();
 		this.catCafe.increaseScore();
 	},
@@ -229,5 +220,9 @@ module.exports = {
 	},
 	startStage: function(){
 		this.dead = false;
+		this.pickNone();
+		this.catCafe.resetFoodSprite();
+		this.sprite.x = 20;
+		this.sprite.y = 140;
 	}
 }

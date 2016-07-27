@@ -51,6 +51,9 @@ module.exports = {
 		this.sprite.addChild(this.cakeSprite);
 
 		this.cursors = catCafe.game.input.keyboard.createCursorKeys();
+		var actionKey = catCafe.game.input.keyboard.addKey(Phaser.Keyboard.Z);
+    	actionKey.onDown.add(this.onActionDown, this);
+
 		if (!catCafe.game.device.desktop){
 			this.initDPad();
 		}
@@ -62,6 +65,7 @@ module.exports = {
         this.stick.alignBottomLeft(0);
         this.actionButton = this.pad.addButton(200, 270, 'dpad', 'button1-up', 'button1-down');
         this.actionButton.scale = 1;
+        this.actionButton.onDown.add(this.onActionDown, this);
 	},
 	pickMilkShake: function(){
 		this.milkShakeSprite.visible = true;
@@ -144,17 +148,19 @@ module.exports = {
 	isDownDown: function(){
 		return this.cursors.down.isDown || (this.stick && this.stick.isDown && this.stick.direction === Phaser.DOWN);
 	},
-	isActionDown: function(){
-		return this.catCafe.game.input.keyboard.isDown(Phaser.KeyCode.Z) || (this.actionButton && this.actionButton.isDown);
+	onActionDown: function(){
+		if (this.dead){
+			this.catCafe.newGame();
+		} else if (this.catCafe.game.paused){
+			this.catCafe.game.paused = false;
+			this.catCafe.pauseSprite.visible = false;
+		} else {
+			this.catCafe.game.paused = true;
+			this.catCafe.pauseSprite.visible = true;
+		} 
 	},
 	update: function(){
-		if (this.scared){
-			return;
-		}
-		if (this.dead){
-			if (this.isActionDown()){
-				this.catCafe.newGame();
-			}
+		if (this.scared || this.dead){
 			return;
 		}
 		this.sprite.body.drag.x = 0;

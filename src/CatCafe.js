@@ -13,7 +13,7 @@ var PhaserStates = {
 		this.game.load.image('bground', 'img/bground.png');
 		this.game.load.image('city', 'img/city.png');
 		this.game.load.image('blank', 'img/blank.png');
-		this.game.load.image('gameOver', 'img/gameOver.png');
+		this.game.load.spritesheet('messages', 'img/messages.png', 96, 8);
 		this.game.load.spritesheet('tileset', 'img/tileset.png', 32, 32);
 		this.game.load.spritesheet('ui', 'img/ui.png', 8, 8);
 	},
@@ -151,8 +151,8 @@ var CatCafe = {
 	newGame: function(){
 		Pera.dead = false;
 		this.gameOver = false;
-		this.currentHeart = 3;
-		for (var i = 0; i < 3; i++){
+		this.currentHeart = 10;
+		for (var i = 0; i < 10; i++){
 			this.hearts[i].loadTexture('ui', 17);
 		}
 		this.score = 0;
@@ -200,7 +200,11 @@ var CatCafe = {
 		this.game.add.sprite(62 + 8*3, 30, 'ui', 0, this.hudGroup);
 		this.game.add.sprite(62 + 8*4, 30, 'ui', 0, this.hudGroup);
 		
-		this.gameOverSprite = this.game.add.sprite(100, 29, 'gameOver', 0, this.hudGroup);
+		this.gameOverSprite = this.game.add.sprite(100, 224, 'messages', 0, this.hudGroup);
+		this.pauseSprite = this.game.add.sprite(116, 224, 'messages', 1, this.hudGroup);
+		this.pauseSprite.visible = false;
+		this.dayEndsSprite = this.game.add.sprite(100, 224, 'messages', 2, this.hudGroup);
+		this.dayEndsSprite.visible = false;
 		
 		this.game.add.sprite(0, 0, 'city', 0, this.cityGroup);
 		this.game.add.sprite(0, 0, 'bground', 0, this.backgroundGroup);
@@ -279,6 +283,7 @@ var CatCafe = {
 		if (Pera.dead)
 			return;
 		this.gameActive = false;
+		this.dayEndsSprite.visible = true;
 		this.destroyStage();
 		Pera.endStage();
 		this.game.time.events.add(3*1000, this.increaseStage, this);
@@ -290,6 +295,7 @@ var CatCafe = {
 		this.setStage(this.currentStage);
 		this.game.time.events.add(120*1000, this.endDay, this);
 		this.gameActive = true; 
+		this.dayEndsSprite.visible = false;
 	},
 	update: function(){
 		this.game.physics.arcade.collide(Pera.sprite, this.kitchen, hitKitchen, null, this);

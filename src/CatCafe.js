@@ -148,6 +148,23 @@ var CatCafe = {
 
 		}
 	},
+	newGame: function(){
+		Pera.dead = false;
+		this.gameOver = false;
+		this.currentHeart = 3;
+		for (var i = 0; i < 3; i++){
+			this.hearts[i].loadTexture('ui', 17);
+		}
+		this.score = 0;
+		this.updateScore();
+		this.gameOverSprite.visible = false;
+		this.destroyStage();
+		Pera.endStage();
+		this.currentStage = 0;
+		this.setStage(0);
+		this.gameActive = true; 
+		this.game.time.events.add(122*1000, this.endDay, this);
+	},
 	start: function(){
 		if (!this.game.device.desktop){
 			this.game.scale.setGameSize(256, 340);
@@ -158,13 +175,14 @@ var CatCafe = {
 		this.entitiesGroup = this.game.add.group(this.mainGroup);
 		this.boundariesGroup = this.game.add.group(this.mainGroup);
 		this.hudGroup = this.game.add.group();
+		this.holyCatsGroup = this.game.add.group(this.mainGroup);
 		this.hearts = [];
-		this.currentHeart = 10;
+		
 		for (var i = 0; i < 10; i++){
 			this.hearts[i] = this.game.add.sprite(62 + 10*i, 6, 'ui', 17, this.hudGroup);
 		}
 		this.scoreDigits = [];
-		this.score = 0;
+		
 		for (var i = 0; i < 6; i++){
 			this.scoreDigits[i] = this.game.add.sprite(62 + 8*i, 14, 'ui', 0, this.hudGroup);
 		}
@@ -181,11 +199,12 @@ var CatCafe = {
 		colon.animations.play('blink');
 		this.game.add.sprite(62 + 8*3, 30, 'ui', 0, this.hudGroup);
 		this.game.add.sprite(62 + 8*4, 30, 'ui', 0, this.hudGroup);
-		this.updateScore();
+		
 		this.gameOverSprite = this.game.add.sprite(100, 29, 'gameOver', 0, this.hudGroup);
-		this.gameOverSprite.visible = false;
+		
 		this.game.add.sprite(0, 0, 'city', 0, this.cityGroup);
 		this.game.add.sprite(0, 0, 'bground', 0, this.backgroundGroup);
+		this.garbageGroup = this.game.add.group(this.backgroundGroup);
 		var lali = this.game.add.sprite(-1, 71, 'tileset', 203, this.backgroundGroup);
 		lali.animations.add('blink', [201,202], 2, true);
 		lali.animations.play('blink');
@@ -205,14 +224,12 @@ var CatCafe = {
 		Pera.init(this);
 		Shoey.init(this, 10, 208);
 		this.entities = [];
-		this.currentStage = 0;
-		this.setStage(0);
 		this.sortSpritesByDepth();
-		this.game.time.events.add(122*1000, this.endDay, this);
 
 		this.wanderingCat = this.game.add.sprite(150, 70, 'tileset', 0, this.cityGroup);
 		this.game.physics.arcade.enable(this.wanderingCat);
 		this.setWanderingCat();
+		this.newGame();
 	},
 	setWanderingCat: function(){
 		var leftToRight = Math.random() > 0.5;
@@ -252,7 +269,8 @@ var CatCafe = {
 			if (this.entities[i].destroy)
 				this.entities[i].destroy();
 		}
-		this.holyCatsGroup.destroy(true);
+		this.holyCatsGroup.removeAll(true);
+		this.garbageGroup.removeAll(true);
 		this.entities = [];
 		this.stageSprites = [];
 		this.busy = {};
@@ -260,6 +278,7 @@ var CatCafe = {
 	endDay: function(){
 		if (Pera.dead)
 			return;
+		this.gameActive = false;
 		this.destroyStage();
 		Pera.endStage();
 		this.game.time.events.add(3*1000, this.increaseStage, this);
@@ -270,6 +289,7 @@ var CatCafe = {
 		this.currentStage++;
 		this.setStage(this.currentStage);
 		this.game.time.events.add(120*1000, this.endDay, this);
+		this.gameActive = true; 
 	},
 	update: function(){
 		this.game.physics.arcade.collide(Pera.sprite, this.kitchen, hitKitchen, null, this);
@@ -341,7 +361,7 @@ var CatCafe = {
 	},
 	busy: {},
 	placeHolyCat: function(){
-		if (!this.holyCatsGroup.exists)
+		if (!this.gameActive)
 			return;
 		var place = Util.rand(0,6);
 		while (this.busy[place]){
@@ -360,7 +380,7 @@ var CatCafe = {
 		}
 	},
 	setStage: function(num){
-		this.holyCatsGroup = this.game.add.group(this.mainGroup);
+		
 		this.entities.push(Pera);
 		this.stageSprites.push(Pera.sprite);
 		Pera.sprite.x = 20;

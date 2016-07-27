@@ -51,8 +51,8 @@ module.exports = {
 		this.sprite.addChild(this.cakeSprite);
 
 		this.cursors = catCafe.game.input.keyboard.createCursorKeys();
-		var actionKey = catCafe.game.input.keyboard.addKey(Phaser.Keyboard.Z);
-    	actionKey.onDown.add(this.onActionDown, this);
+		catCafe.game.input.keyboard.addKey(Phaser.Keyboard.P).onDown.add(this.onActionDown, this);
+		catCafe.game.input.keyboard.addKey(Phaser.Keyboard.ENTER).onDown.add(this.onActionDown, this);
 
 		if (!catCafe.game.device.desktop){
 			this.initDPad();

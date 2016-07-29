@@ -12,6 +12,7 @@ var PhaserStates = {
 		}
 		this.game.load.image('bground', 'img/bground.png');
 		this.game.load.image('city', 'img/city.png');
+		this.game.load.image('title', 'img/title.png');
 		this.game.load.image('blank', 'img/blank.png');
 		this.game.load.spritesheet('messages', 'img/messages.png', 96, 8);
 		this.game.load.spritesheet('tileset', 'img/tileset.png', 32, 32);
@@ -149,6 +150,7 @@ var CatCafe = {
 		}
 	},
 	newGame: function(){
+		this.titleScreenGroup.visible = false;
 		Pera.dead = false;
 		this.gameOver = false;
 		this.currentHeart = 10;
@@ -233,6 +235,14 @@ var CatCafe = {
 		this.wanderingCat = this.game.add.sprite(150, 70, 'tileset', 0, this.cityGroup);
 		this.game.physics.arcade.enable(this.wanderingCat);
 		this.setWanderingCat();
+
+		this.titleScreenGroup = this.game.add.group();
+		this.game.add.sprite(0, 0, 'title', 0, this.titleScreenGroup);
+	},
+	showTitleScreen: function(){
+		this.titleScreenGroup.visible = true;
+	},
+	titleScreenAction: function(){
 		this.newGame();
 	},
 	setWanderingCat: function(){

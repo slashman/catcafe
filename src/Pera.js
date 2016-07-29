@@ -149,8 +149,10 @@ module.exports = {
 		return this.cursors.down.isDown || (this.stick && this.stick.isDown && this.stick.direction === Phaser.DOWN);
 	},
 	onActionDown: function(){
-		if (this.dead){
-			this.catCafe.newGame();
+		if (this.catCafe.titleScreenGroup.visible){
+			this.catCafe.titleScreenAction();
+		} else if (this.dead){
+			this.catCafe.showTitleScreen();
 		} else if (this.catCafe.game.paused){
 			this.catCafe.game.paused = false;
 			this.catCafe.pauseSprite.visible = false;

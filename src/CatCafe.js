@@ -108,6 +108,15 @@ var SPECS = {
 	}
 } 
 
+function setTVFrame(){
+	var body = document.getElementsByTagName('body')[0];
+	body.style.backgroundImage = "url('img/tv.png')";
+    body.style.backgroundSize = 'auto 100%';
+    body.style.backgroundPosition = 'center top';
+    body.style.backgroundRepeat = 'no-repeat';
+
+}
+
 var CatCafe = {
 	init: function(){
 		this.game = new Phaser.Game(256, 240, Phaser.AUTO, '', { preload: PhaserStates.preload, create: PhaserStates.create, update: PhaserStates.update }, false, false);
@@ -170,6 +179,8 @@ var CatCafe = {
 	start: function(){
 		if (!this.game.device.desktop){
 			this.game.scale.setGameSize(256, 340);
+		} else {
+			this.game.time.events.add(100, setTVFrame);
 		}
 		this.mainGroup = this.game.add.group();
 		this.cityGroup = this.game.add.group(this.mainGroup);

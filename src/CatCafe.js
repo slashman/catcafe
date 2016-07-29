@@ -17,6 +17,11 @@ var PhaserStates = {
 		this.game.load.spritesheet('messages', 'img/messages.png', 96, 8);
 		this.game.load.spritesheet('tileset', 'img/tileset.png', 32, 32);
 		this.game.load.spritesheet('ui', 'img/ui.png', 8, 8);
+		this.game.load.spritesheet('title-tiles', 'img/title-tiles-256-64.png', 256, 64);
+
+		this.game.load.audio('menu', ['ogg/menu.ogg', 'mp3/menu.mp3']);
+		this.game.load.audio('game', ['ogg/game.ogg', 'mp3/game.mp3']);
+
 	},
 	create: function() {
 		this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
@@ -249,12 +254,23 @@ var CatCafe = {
 
 		this.titleScreenGroup = this.game.add.group();
 		this.game.add.sprite(0, 0, 'title', 0, this.titleScreenGroup);
+		var logoSprite = this.game.add.sprite(24, 8, 'title-tiles', 0, this.titleScreenGroup);
+		logoSprite.animations.add('blink', [0,1], 2, true);
+		logoSprite.animations.play('blink');
+		this.game.add.sprite(96, 48, 'title-tiles', 2, this.titleScreenGroup);
+
+		this.menuMusic = this.game.add.audio('menu',0.5, true);
+		this.gameMusic = this.game.add.audio('game',0.5, true);
+		this.menuMusic.play();
 	},
 	showTitleScreen: function(){
 		this.titleScreenGroup.visible = true;
+		this.menuMusic.play();
 	},
 	titleScreenAction: function(){
 		this.newGame();
+		this.menuMusic.stop();
+		this.gameMusic.play();
 	},
 	setWanderingCat: function(){
 		var leftToRight = Math.random() > 0.5;

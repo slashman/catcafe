@@ -210,6 +210,7 @@ module.exports = {
 		
 	},
 	kill: function(){
+		this.catCafe.gameMusic.stop();
 		this.dead = true;
 		if (this.currentFood)
 			this.dropTheFood();

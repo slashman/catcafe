@@ -99,8 +99,8 @@ HolyCat.prototype = {
 			return;
 		this.wantedFood = Util.randomElementOf(['cake', 'milkShake', 'coffee', 'puddin']);
 		this.thinkingOnFood = false;
-		this.grumpyTimer = this.catCafe.game.time.events.add(15000, this.warnGrumpy, this);
-		this.grumpyTimer = this.catCafe.game.time.events.add(20000, this.getGrumpy, this);
+		this.catCafe.game.time.events.add(15000, this.warnGrumpy, this);
+		this.catCafe.game.time.events.add(20000, this.getGrumpy, this);
 		this.globe.animations.stop();
 		this.globe.frame = 195;
 		this.globe.visible = true;
@@ -110,6 +110,8 @@ HolyCat.prototype = {
 	warnGrumpy: function(){
 		if (this.dead || this.target.dead)
 			return;
+		if (!this.wantedFood)
+			return;
 		this.globe.animations.play('blink');
 		if (this.meows)
 			this.sprite.animations.play('meow');
@@ -117,7 +119,8 @@ HolyCat.prototype = {
 	getGrumpy: function(){
 		if (this.dead || this.target.dead)
 			return;
-		//this.sprite.animations.play('grumpy');
+		if (!this.wantedFood)
+			return;
 		this.catCafe.reduceHearts();
 		this.wantedFood = false;
 		this.globe.visible = false;
@@ -134,7 +137,6 @@ HolyCat.prototype = {
 		var foodType = this.target.currentFood;
 		if (foodType && foodType === this.wantedFood){
 			this.sprite.animations.play('idle');
-			this.catCafe.game.time.events.remove(this.grumpyTimer);
 			this.target.deliverFood();
 			this.wantedFood = false;
 			this.globe.visible = false;
@@ -158,8 +160,6 @@ HolyCat.prototype = {
 	},
 	destroy: function(){
 		this.dead = true;
-		if (this.grumpyTimer)
-			this.catCafe.game.time.events.remove(this.grumpyTimer);
 	}
 	
 };

@@ -22,6 +22,7 @@ var FOOD_TILES = {
 
 
 function HolyCat(catCafe, pera, x, y, baseSprite, vertical){
+	this.isHolyCat = true;
 	this.meows = baseSprite === 160; //TODO All cats meow
 	this.catCafe = catCafe;
 	this.target = pera;
@@ -115,12 +116,14 @@ HolyCat.prototype = {
 		this.globe.animations.play('blink');
 		if (this.meows)
 			this.sprite.animations.play('meow');
+		this.isGrumpy = true;
 	},
 	getGrumpy: function(){
 		if (this.dead || this.target.dead)
 			return;
 		if (!this.wantedFood)
 			return;
+		this.isGrumpy = false;
 		this.catCafe.reduceHearts();
 		this.wantedFood = false;
 		this.globe.visible = false;
@@ -139,6 +142,7 @@ HolyCat.prototype = {
 			this.sprite.animations.play('idle');
 			this.target.deliverFood();
 			this.wantedFood = false;
+			this.isGrumpy = false;
 			this.globe.visible = false;
 			this.wantedFoodSprite.visible = false;
 			this.eating = true;

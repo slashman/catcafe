@@ -1,4 +1,5 @@
 var Pera = require('./Pera');
+var Lali = require('./Lali');
 var Shoey = require('./Shoey');
 var Cat = require('./Cat.class');
 var HolyCat = require('./HolyCat.class');
@@ -227,10 +228,8 @@ var CatCafe = {
 		this.game.add.sprite(0, 0, 'city', 0, this.cityGroup);
 		this.game.add.sprite(0, 0, 'bground', 0, this.backgroundGroup);
 		this.garbageGroup = this.game.add.group(this.backgroundGroup);
-		var lali = this.game.add.sprite(-1, 71, 'tileset', 203, this.backgroundGroup);
-		lali.animations.add('blink', [201,202], 2, true);
-		lali.animations.play('blink');
-		this.currentFoodSprite = this.game.add.sprite(8, 82, 'tileset', FOOD_TILES['milkShake'], this.backgroundGroup);
+		Lali.init(this)
+		this.currentFoodSprite = this.game.add.sprite(12, 82, 'tileset', FOOD_TILES['milkShake'], this.backgroundGroup);
 
 		this.addBoundary(0,0,256,118);
 		this.addBoundary(0,195,256,45);
@@ -348,6 +347,7 @@ var CatCafe = {
 		}
 		this.game.physics.arcade.collide(Pera.sprite, this.entitiesGroup, peraCollide, null, this);
 		this.game.physics.arcade.collide(this.entitiesGroup, this.entitiesGroup, dragCollide, null, this);
+		Lali.update();
 	},
 	getClosestEntity: function(){
 		var minDistance = 99999;
@@ -421,6 +421,13 @@ var CatCafe = {
 			this.entities.push(cat);
 			cat.place = place + 2;
 		}
+	},
+	hasGrumpyCats: function(){
+		for (var i = 0; i < this.entities.length; i++){
+			if (this.entities[i].isHolyCat &&  this.entities[i].isGrumpy)
+				return true;
+		}
+		return false;
 	},
 	setStage: function(num){
 		

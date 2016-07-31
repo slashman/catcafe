@@ -4,6 +4,9 @@ var Shoey = require('./Shoey');
 var Cat = require('./Cat.class');
 var HolyCat = require('./HolyCat.class');
 var Util = require('./Util');
+var fakeCrt = require('./FakeCRT');
+
+var emulateTV = true;
 
 var PhaserStates = {
 	preload: function() {
@@ -26,7 +29,14 @@ var PhaserStates = {
 
 	},
 	create: function() {
-		this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
+		if (emulateTV){
+			this.scale.scaleMode = Phaser.ScaleManager.USER_SCALE;
+			//var ratio = 3.9;
+			var ratio = 2.6; // TODO: calculate ratio
+			this.scale.setUserScale(1.33*ratio, 1*ratio, 0, 0);
+		} else {
+			this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;	
+		}
 		this.scale.pageAlignHorizontally = true;
 		CatCafe.start();
 	}, 
@@ -137,12 +147,16 @@ var SPECS = {
 } 
 
 function setTVFrame(){
-	var body = document.getElementsByTagName('body')[0];
-	body.style.backgroundImage = "url('img/tv.png')";
-    body.style.backgroundSize = 'auto 100%';
-    body.style.backgroundPosition = 'center top';
-    body.style.backgroundRepeat = 'no-repeat';
-
+	if (emulateTV){
+		document.getElementById('scanlines').style.display = 'block';
+		fakeCrt();
+	} else {
+		var body = document.getElementsByTagName('body')[0];
+		body.style.backgroundImage = "url('img/tv.png')";
+	    body.style.backgroundSize = 'auto 100%';
+	    body.style.backgroundPosition = 'center top';
+	    body.style.backgroundRepeat = 'no-repeat';	
+	}
 }
 
 var DAY_DURATION = 112;
@@ -226,7 +240,6 @@ var CatCafe = {
 		} else {
 			this.game.time.events.add(100, setTVFrame);
 		}
-
 		this.game.input.keyboard.addKey(Phaser.Keyboard.LEFT).onDown.add(this.changeTitleOption, this);
 		this.game.input.keyboard.addKey(Phaser.Keyboard.RIGHT).onDown.add(this.changeTitleOption, this);
 

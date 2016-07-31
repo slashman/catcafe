@@ -18,6 +18,7 @@ module.exports = {
 		this.sprite.animations.add('walk', [16, 17, 18, 19, 20, 21, 22, 23], 8, true);
 		this.sprite.animations.add('scared', [8, 9, 10], 8, false);
 		this.sprite.animations.add('cry', [11, 12], 4, true);
+		this.sprite.animations.add('celebrate', [14, 15], 4, true);
 		
 		this.binSprite = catCafe.game.add.sprite(0, 0, 'tileset', 197, catCafe.entitiesGroup);
 		this.binSprite.animations.add('walk', [197, 198, 199, 200, 199, 198], 8, true);
@@ -236,12 +237,16 @@ module.exports = {
 		this.stop();
 		this.sprite.body.velocity.x = 0;
 		this.sprite.body.velocity.y = 0;
-		//TODO: Play a cheerful anim?
+		this.pickNone();
+		this.catCafe.resetFoodSprite();
+		this.sprite.frame = 13;
+		this.catCafe.game.time.events.add(500, this.cheer, this);
+	},
+	cheer: function(){
+		this.sprite.animations.play('celebrate');
 	},
 	startStage: function(){
 		this.dead = false;
-		this.pickNone();
-		this.catCafe.resetFoodSprite();
 		this.sprite.x = 20;
 		this.sprite.y = 140;
 		if (this._flipped)

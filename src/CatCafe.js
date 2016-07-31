@@ -98,8 +98,29 @@ var FOOD_TILES = {
 };
 
 var SPECS = {
-	table: {
+	table1: {
+		tile: 192,
+		w: 15,
+		h: 8,
+		xoff: 9,
+		yoff: 24
+	},
+	table2: {
 		tile: 193,
+		w: 15,
+		h: 8,
+		xoff: 9,
+		yoff: 24
+	},
+	table3: {
+		tile: 204,
+		w: 15,
+		h: 8,
+		xoff: 9,
+		yoff: 24
+	},
+	table4: {
+		tile: 205,
 		w: 15,
 		h: 8,
 		xoff: 9,
@@ -146,6 +167,8 @@ var CatCafe = {
 		this.currentFoodSprite.loadTexture('tileset', FOOD_TILES['milkShake']);
 	},
 	addObstacle: function(type, x, y){
+		if (type === 'table')
+			type = type+Util.rand(1,4);
 		var specs = SPECS[type];
 		var boundary = this.game.add.sprite(x,y, 'tileset', specs.tile, this.entitiesGroup);
 		this.game.physics.arcade.enable(boundary);
@@ -478,21 +501,37 @@ var CatCafe = {
 			this.entities.push(cat);
 			this.stageSprites.push(cat.sprite);
 		}
-		switch (specs.tables){
-			case 6:
-				this.addObstacle('table', 176,108);
-			case 5:
-				this.addObstacle('table', 64,140);
-			case 4:
-				this.addObstacle('table', 160,140);
-			case 3: 
-				this.addObstacle('table', 80,108);
-				this.addObstacle('table', 128,108);
-				this.addObstacle('table', 112,140);
-			case 0: default:
+		var tableLayout = TABLE_LAYOUTS[specs.tables];
+		for (var i = 0; i < tableLayout.length; i++){
+			this.addObstacle('table', TABLE_POSITIONS[tableLayout[i]].x, TABLE_POSITIONS[tableLayout[i]].y);
 		}
 	}
 }
+
+var T_OFF_X = 48;
+var T_OFF_Y = 108;
+
+var T_SPACE_X = 56;
+var T_SPACE_Y = 18;
+var TABLE_POSITIONS = [
+	{x: T_OFF_X, y:T_OFF_Y},
+	{x: T_OFF_X+T_SPACE_X, y:T_OFF_Y},
+	{x: T_OFF_X+T_SPACE_X*2, y:T_OFF_Y},
+	{x: T_OFF_X+T_SPACE_X, y:T_OFF_Y+T_SPACE_Y},
+	{x: T_OFF_X, y:T_OFF_Y+T_SPACE_Y*2},
+	{x: T_OFF_X+T_SPACE_X, y:T_OFF_Y+T_SPACE_Y*2},
+	{x: T_OFF_X+T_SPACE_X*2, y:T_OFF_Y+T_SPACE_Y*2},
+];
+
+var TABLE_LAYOUTS = [
+	[],
+	[3],
+	[1,5],
+	[1,4,6],
+	[0,2,4,6],
+	[0,2,3,4,6],
+	[0,1,2,4,5,6],
+];
 
 /**
  Difficulty per stage
@@ -516,7 +555,7 @@ var stageMap = {
 		{
 			cats: 2,
 			holyCats: 2,
-			tables: 0
+			tables: 1
 		},
 		{
 			cats: 3,
@@ -526,7 +565,7 @@ var stageMap = {
 		{
 			cats: 3,
 			holyCats: 3,
-			tables: 0
+			tables: 1
 		},
 		{
 			cats: 4,
@@ -536,7 +575,7 @@ var stageMap = {
 		{
 			cats: 4,
 			holyCats: 4,
-			tables: 0
+			tables: 1
 		},
 		{
 			cats: 5,
@@ -553,7 +592,7 @@ var stageMap = {
 		{
 			cats: 3,
 			holyCats: 4,
-			tables: 0
+			tables: 1
 		},
 		{
 			cats: 4,
@@ -563,7 +602,7 @@ var stageMap = {
 		{
 			cats: 4,
 			holyCats: 5,
-			tables: 0
+			tables: 1
 		},
 		{
 			cats: 5,
@@ -573,7 +612,7 @@ var stageMap = {
 		{
 			cats: 5,
 			holyCats: 6,
-			tables: 0
+			tables: 1
 		},
 		{
 			cats: 6,

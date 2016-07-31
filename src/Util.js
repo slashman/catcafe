@@ -11,6 +11,9 @@ var Util = {
 	randomElementOf: function(array){
 		return array[Util.rand(0, array.length-1)];
 	},
+	chance: function(prob){
+		return this.rand(0,100) <= prob;
+	},
 	noop: function(){
 		return true;
 	},

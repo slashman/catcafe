@@ -3,7 +3,7 @@ module.exports = {
 		this.catCafe = catCafe;
 		this.sprite = catCafe.game.add.sprite(0, 74, 'tileset', 203, catCafe.backgroundGroup);
 		this.sprite.animations.add('blink', [201,202], 2, true);
-		this.sprite.animations.add('danger', [201,203], 2, true);
+		this.sprite.animations.add('danger', [201, 203, 206, 203], 3, true);
 		this.sprite.animations.play('blink');
 		this.framesToReact = 0;
 	},

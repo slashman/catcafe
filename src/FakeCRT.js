@@ -12,7 +12,7 @@
 //var lines = new Image();
 //lines.src = 'img/scanlines.png';
 
-function fakeCRT() {
+function fakeCRT(options) {
     var glcanvas, source, srcctx, texture, w, h, hw, hh, w75;
     
     try {
@@ -44,12 +44,15 @@ function fakeCRT() {
     source.id = 'old_' + source.id;
 
     // Locate the TV overlay 
-    var tvOverlay = document.getElementById('scanlines');
-    var canvasMargin = parseInt(glcanvas.style.marginLeft.substr(0, glcanvas.style.marginLeft.indexOf("px")));
-    var originalDistance = 418;
-    var scale = tvOverlay.clientWidth / 1755;
-    var realDistance = Math.round(originalDistance * scale);
-    tvOverlay.style.left = (canvasMargin-realDistance)+"px" ;
+    if (options.scanlinesOverlay){
+        var tvOverlay = document.getElementById('scanlines');
+        tvOverlay.style.display = 'block';
+        var canvasMargin = parseInt(glcanvas.style.marginLeft.substr(0, glcanvas.style.marginLeft.indexOf("px")));
+        var originalDistance = 418;
+        var scale = tvOverlay.clientWidth / 1755;
+        var realDistance = Math.round(originalDistance * scale);
+        tvOverlay.style.left = (canvasMargin-realDistance)+"px" ;
+    }
 
     // It is pretty silly to setup a separate animation timer loop here, but
     // this lets us avoid monkeying with the source game's code.
@@ -63,10 +66,12 @@ function fakeCRT() {
         texture.loadContentsOf(source);
         
         // Apply WebGL magic
-        glcanvas.draw(texture)
-            .bulgePinch(hw, hh, w75, 0.12)
-            .vignette(0.25, 0.74)
-            .update();
+        var chain = glcanvas.draw(texture);
+        if (options.bulge)
+            chain = chain.bulgePinch(hw, hh, w75, 0.12);
+        if (options.vignette)
+            chain = chain.vignette(0.25, 0.74);
+        chain.update();
     }, Math.floor(1000 / 40));
 }
 

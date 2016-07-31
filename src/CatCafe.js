@@ -6,7 +6,14 @@ var HolyCat = require('./HolyCat.class');
 var Util = require('./Util');
 var fakeCrt = require('./FakeCRT');
 
-var emulateTV = true;
+var TVEmulation = {
+	enabled: true,
+	strech43: true,
+	scanlinesOverlay: true,
+	tvBackground: false,
+	bulge: false,
+	vignette: false
+};
 
 var PhaserStates = {
 	preload: function() {
@@ -29,11 +36,10 @@ var PhaserStates = {
 
 	},
 	create: function() {
-		if (emulateTV){
+		if (TVEmulation.strech43){
 			this.scale.scaleMode = Phaser.ScaleManager.USER_SCALE;
-			//var ratio = 3.9;
-			var ratio = 2.6; // TODO: calculate ratio
-			this.scale.setUserScale(1.33*ratio, 1*ratio, 0, 0);
+            var ratio = getRatio(256, 240);
+            this.scale.setUserScale(1.33*ratio.x, 1*ratio.y, 0, 0);
 		} else {
 			this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;	
 		}
@@ -44,6 +50,21 @@ var PhaserStates = {
 		CatCafe.update();
 	}
 };
+
+function getRatio (w, h) {
+	var width = window.innerWidth;
+    var height = window.innerHeight;
+	var dips = window.devicePixelRatio;
+    width = width * dips;
+    height = height * dips;
+    var scaleX = width / w;
+    var scaleY = height / h;
+    return {
+        x: scaleX > scaleY ? scaleY : scaleX,
+        y: scaleX > scaleY ? scaleY : scaleX
+    };
+}
+
 
 function dragCollide(obj1, obj2){
 	
@@ -147,10 +168,22 @@ var SPECS = {
 } 
 
 function setTVFrame(){
-	if (emulateTV){
-		document.getElementById('scanlines').style.display = 'block';
-		fakeCrt();
-	} else {
+	if (!TVEmulation.enabled){
+		return;
+	}
+	if (TVEmulation.bulge || TVEmulation.vignette){
+		fakeCrt(TVEmulation);
+	} else if (TVEmulation.scanlinesOverlay){
+		var tvOverlay = document.getElementById('scanlines');
+		tvOverlay.style.display = 'block';
+		var canvas = document.getElementsByTagName('canvas')[0];
+        var canvasMargin = parseInt(canvas.style.marginLeft.substr(0, canvas.style.marginLeft.indexOf("px")));
+        var originalDistance = 418;
+        var scale = tvOverlay.clientWidth / 1755;
+        var realDistance = Math.round(originalDistance * scale);
+        tvOverlay.style.left = (canvasMargin-realDistance)+"px" ;
+	}
+	if (TVEmulation.tvBackground){
 		var body = document.getElementsByTagName('body')[0];
 		body.style.backgroundImage = "url('img/tv.png')";
 	    body.style.backgroundSize = 'auto 100%';
@@ -238,7 +271,7 @@ var CatCafe = {
 		if (!this.game.device.desktop){
 			this.game.scale.setGameSize(256, 340);
 		} else {
-			this.game.time.events.add(100, setTVFrame);
+			this.game.time.events.add(500, setTVFrame);
 		}
 		this.game.input.keyboard.addKey(Phaser.Keyboard.LEFT).onDown.add(this.changeTitleOption, this);
 		this.game.input.keyboard.addKey(Phaser.Keyboard.RIGHT).onDown.add(this.changeTitleOption, this);
@@ -431,6 +464,7 @@ var CatCafe = {
 		this.game.physics.arcade.collide(Pera.sprite, this.entitiesGroup, peraCollide, null, this);
 		this.game.physics.arcade.collide(this.entitiesGroup, this.entitiesGroup, dragCollide, null, this);
 		Lali.update();
+		Shoey.update();
 	},
 	getClosestEntity: function(){
 		var minDistance = 99999;

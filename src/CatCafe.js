@@ -400,7 +400,7 @@ var CatCafe = {
 		for (var i = 0; i < this.stageDigits.length; i++){
 			this.stageDigits[i].visible = false;
 		}
-		var strStage = this.currentStage+"";
+		var strStage = (this.currentStage+1)+"";
 		for (var i = 0; i < strStage.length; i++){
 			this.stageDigits[i].loadTexture('ui', parseInt(strStage.charAt(i)));
 			this.stageDigits[i].visible = true;

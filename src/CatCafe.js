@@ -215,8 +215,11 @@ var CatCafe = {
 		this.currentFoodSprite.loadTexture('tileset', FOOD_TILES['milkShake']);
 	},
 	addObstacle: function(type, x, y){
-		if (type === 'table')
+		if (type === 'table'){
 			type = type+Util.rand(1,4);
+			this.spawnPoints.push({x: x+8, y: y+24});
+			this.spawnPoints.push({x: x + 26, y: y+24});
+		}
 		var specs = SPECS[type];
 		var boundary = this.game.add.sprite(x,y, 'tileset', specs.tile, this.entitiesGroup);
 		this.game.physics.arcade.enable(boundary);
@@ -495,7 +498,11 @@ var CatCafe = {
 		this.score += 100;
 
 		this.updateScore();
-		var cat = new Cat(this, Pera, Util.rand(32,227), Util.rand(120, 168), Util.rand(0,3) * 32 + 64);
+		this.addCat();
+	},
+	addCat: function(){
+		var spawnPoint = Util.randomElementOf(this.spawnPoints);
+		var cat = new Cat(this, Pera, spawnPoint.x, spawnPoint.y, Util.rand(0,3) * 32 + 64);
 		this.entities.push(cat);
 		this.stageSprites.push(cat.sprite);
 	},
@@ -547,6 +554,7 @@ var CatCafe = {
 		return false;
 	},
 	setStage: function(num){
+		this.spawnPoints = [];
 		this.addObstacle('chair', 217,108);
 		this.addObstacle('chair', 217,132);
 		this.addObstacle('chair', 217,156);
@@ -566,15 +574,15 @@ var CatCafe = {
 			this.game.time.events.add(i*5000, this.placeHolyCat, this);
 		}
 
-		for (var i = 0; i < specs.cats; i++){
-			var cat = new Cat(this, Pera, Util.rand(32,227), Util.rand(120, 198), Util.rand(0,3) * 32 + 64);
-			this.entities.push(cat);
-			this.stageSprites.push(cat.sprite);
-		}
 		var tableLayout = TABLE_LAYOUTS[specs.tables];
 		for (var i = 0; i < tableLayout.length; i++){
 			this.addObstacle('table', TABLE_POSITIONS[tableLayout[i]].x, TABLE_POSITIONS[tableLayout[i]].y);
 		}
+
+		for (var i = 0; i < specs.cats; i++){
+			this.addCat();
+		}
+
 		this.dayEndsSprite.visible = false;
 	}
 }

@@ -152,7 +152,7 @@ module.exports = {
 	onActionDown: function(){
 		if (this.catCafe.titleScreenGroup.visible){
 			this.catCafe.titleScreenAction();
-		} else if (this.dead){
+		} else if (this.dead || this.catCafe.endingScreenGroup.visible){
 			this.catCafe.showTitleScreen();
 		} else if (this.catCafe.game.paused){
 			this.catCafe.game.paused = false;

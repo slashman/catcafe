@@ -14,6 +14,7 @@ var PhaserStates = {
 		this.game.load.image('bground', 'img/bground.png');
 		this.game.load.image('city', 'img/city.png');
 		this.game.load.image('title', 'img/title.png');
+		this.game.load.image('ending', 'img/ending.png');
 		this.game.load.image('blank', 'img/blank.png');
 		this.game.load.spritesheet('messages', 'img/messages.png', 96, 8);
 		this.game.load.spritesheet('tileset', 'img/tileset.png', 32, 32);
@@ -302,8 +303,22 @@ var CatCafe = {
 		this.menuMusic = this.game.add.audio('menu',0.5, true);
 		this.gameMusic = this.game.add.audio('game',0.5, true);
 		this.menuMusic.play();
+
+		this.endingScreenGroup = this.game.add.group();
+		this.endingScreenGroup.visible = false;
+		this.game.add.sprite(0, 0, 'ending', 0, this.endingScreenGroup);
+		var endingCharacter = this.game.add.sprite(107, 151, 'tileset', 13, this.endingScreenGroup);
+		endingCharacter.animations.add('celebrate', [14, 15], 4, true);
+		endingCharacter.animations.play('celebrate');
+
+	},
+	showEnding: function(){
+		this.endingScreenGroup.visible = true;
+		this.gameMusic.stop();
+		this.menuMusic.play(); //TODO: Victory Music
 	},
 	showTitleScreen: function(){
+		this.endingScreenGroup.visible = false;
 		this.titleScreenGroup.visible = true;
 		this.menuMusic.play();
 	},
@@ -373,7 +388,12 @@ var CatCafe = {
 		this.dayEndsSprite.visible = true;
 		this.destroyStage();
 		Pera.endStage();
-		this.game.time.events.add(3*1000, this.increaseStage, this);
+		if (this.currentStage == 6){
+			Pera.dead = true;
+			this.game.time.events.add(5*1000, this.showEnding, this);
+		} else {
+			this.game.time.events.add(3*1000, this.increaseStage, this);
+		}
 	},
 	increaseStage: function(){
 		if (Pera.dead)
@@ -382,7 +402,6 @@ var CatCafe = {
 		this.setStage(this.currentStage);
 		this.game.time.events.add(DAY_DURATION*1000, this.endDay, this);
 		this.gameActive = true; 
-		this.dayEndsSprite.visible = false;
 	},
 	update: function(){
 		this.game.physics.arcade.collide(Pera.sprite, this.kitchen, hitKitchen, null, this);
@@ -509,6 +528,7 @@ var CatCafe = {
 		for (var i = 0; i < tableLayout.length; i++){
 			this.addObstacle('table', TABLE_POSITIONS[tableLayout[i]].x, TABLE_POSITIONS[tableLayout[i]].y);
 		}
+		this.dayEndsSprite.visible = false;
 	}
 }
 

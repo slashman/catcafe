@@ -123,6 +123,8 @@ function setTVFrame(){
 
 }
 
+var DAY_DURATION = 112;
+
 var CatCafe = {
 	init: function(){
 		this.game = new Phaser.Game(256, 240, Phaser.AUTO, '', { preload: PhaserStates.preload, create: PhaserStates.create, update: PhaserStates.update }, false, false);
@@ -180,7 +182,7 @@ var CatCafe = {
 		this.currentStage = 0;
 		this.setStage(0);
 		this.gameActive = true; 
-		this.game.time.events.add(122*1000, this.endDay, this);
+		this.game.time.events.add(DAY_DURATION*1000, this.endDay, this);
 	},
 	start: function(){
 		if (!this.game.device.desktop){
@@ -237,10 +239,6 @@ var CatCafe = {
 		this.kitchen = this.addBoundary(10,97,25,21);
 
 		this.stageSprites = [];
-
-		this.addObstacle('chair', 217,108);
-		this.addObstacle('chair', 217,132);
-		this.addObstacle('chair', 217,156);
 
 		Pera.init(this);
 		Shoey.init(this, 10, 208);
@@ -312,6 +310,12 @@ var CatCafe = {
 		this.holyCatsGroup.removeAll(true);
 		this.garbageGroup.removeAll(true);
 		this.entities = [];
+		for (var i = 0; i < this.stageSprites.length; i++){
+			var sprite = this.stageSprites[i];
+			if (sprite.alive && sprite != Pera.sprite){
+				sprite.destroy();
+			}
+		}
 		this.stageSprites = [];
 		this.busy = {};
 	},
@@ -329,7 +333,7 @@ var CatCafe = {
 			return;
 		this.currentStage++;
 		this.setStage(this.currentStage);
-		this.game.time.events.add(120*1000, this.endDay, this);
+		this.game.time.events.add(DAY_DURATION*1000, this.endDay, this);
 		this.gameActive = true; 
 		this.dayEndsSprite.visible = false;
 	},
@@ -430,7 +434,9 @@ var CatCafe = {
 		return false;
 	},
 	setStage: function(num){
-		
+		this.addObstacle('chair', 217,108);
+		this.addObstacle('chair', 217,132);
+		this.addObstacle('chair', 217,156);
 		this.entities.push(Pera);
 		this.stageSprites.push(Pera.sprite);
 		Pera.sprite.x = 20;
@@ -439,9 +445,9 @@ var CatCafe = {
 		this.updateStageNumber();
 		this.hour = 7;
 		this.updateTime();
-		if (num > stageMap.length - 1)
-			num = stageMap.length - 1;
-		var specs = stageMap[num];
+		if (num > stageMap.a.length - 1)
+			num = stageMap.a.length - 1;
+		var specs = stageMap.a[num];
 		for (var i = 0; i < specs.holyCats; i++){
 			this.game.time.events.add(i*5000, this.placeHolyCat, this);
 		}
@@ -451,48 +457,110 @@ var CatCafe = {
 			this.entities.push(cat);
 			this.stageSprites.push(cat.sprite);
 		}
-		switch (specs.pattern){
-			case 1:
-				this.addObstacle('table', 80,108);
+		switch (specs.tables){
+			case 6:
 				this.addObstacle('table', 176,108);
+			case 5:
 				this.addObstacle('table', 64,140);
+			case 4:
 				this.addObstacle('table', 160,140);
-			break;
-			case 2:
-				this.addObstacle('table', 32,108);
+			case 3: 
 				this.addObstacle('table', 80,108);
 				this.addObstacle('table', 128,108);
-				this.addObstacle('table', 176,108);
-				this.addObstacle('table', 64,140);
 				this.addObstacle('table', 112,140);
-				this.addObstacle('table', 160,140);
-			break;
+			case 0: default:
 		}
 	}
 }
 
-var stageMap = [
-	{
-		cats: 3,
-		holyCats: 4,
-		pattern: 1
-	},
-	{
-		cats: 3,
-		holyCats: 4,
-		pattern: 1
-	},
-	{
-		cats: 4,
-		holyCats: 5,
-		pattern: 2
-	},
-	{
-		cats: 4,
-		holyCats: 6,
-		pattern: 2
-	},
-];
+/**
+ Difficulty per stage
+       GAME A               GAME B
+ stage cats holyCats tables cats holyCats tables
+ 1     2    2        3      3    4        3  
+ 2     2    2        0      3    4        0  
+ 3     3    2        4      4    4        4  
+ 4     3    3        0      4    5        0  
+ 5     4    3        5      5    5        5  
+ 6     4    4        0      5    6        0  
+ 7     5    5        6      6    6        6  
+*/
+var stageMap = {
+	a: [
+		{
+			cats: 2,
+			holyCats: 2,
+			tables: 3
+		},
+		{
+			cats: 2,
+			holyCats: 2,
+			tables: 0
+		},
+		{
+			cats: 3,
+			holyCats: 2,
+			tables: 4
+		},
+		{
+			cats: 3,
+			holyCats: 3,
+			tables: 0
+		},
+		{
+			cats: 4,
+			holyCats: 3,
+			tables: 5
+		},
+		{
+			cats: 4,
+			holyCats: 4,
+			tables: 0
+		},
+		{
+			cats: 5,
+			holyCats: 5,
+			tables: 6
+		}
+	],
+	b: [
+		{
+			cats: 3,
+			holyCats: 4,
+			tables: 3
+		},
+		{
+			cats: 3,
+			holyCats: 4,
+			tables: 0
+		},
+		{
+			cats: 4,
+			holyCats: 4,
+			tables: 4
+		},
+		{
+			cats: 4,
+			holyCats: 5,
+			tables: 0
+		},
+		{
+			cats: 5,
+			holyCats: 5,
+			tables: 5
+		},
+		{
+			cats: 5,
+			holyCats: 6,
+			tables: 0
+		},
+		{
+			cats: 6,
+			holyCats: 6,
+			tables: 6
+		}
+	]
+};
 
 window.CatCafe = CatCafe;
 

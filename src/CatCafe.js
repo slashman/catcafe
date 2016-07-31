@@ -126,6 +126,7 @@ function setTVFrame(){
 var DAY_DURATION = 112;
 
 var CatCafe = {
+	gameASelected: true,
 	init: function(){
 		this.game = new Phaser.Game(256, 240, Phaser.AUTO, '', { preload: PhaserStates.preload, create: PhaserStates.create, update: PhaserStates.update }, false, false);
 	},
@@ -184,12 +185,27 @@ var CatCafe = {
 		this.gameActive = true; 
 		this.game.time.events.add(DAY_DURATION*1000, this.endDay, this);
 	},
+	changeTitleOption: function(){
+		if (!this.titleScreenGroup.visible){
+			return;
+		}
+		this.gameASelected = !this.gameASelected;
+		if (this.gameASelected){
+			this.gameTypeSelectSprite.x = 50;
+		} else {
+			this.gameTypeSelectSprite.x = 138;
+		}
+	},
 	start: function(){
 		if (!this.game.device.desktop){
 			this.game.scale.setGameSize(256, 340);
 		} else {
 			this.game.time.events.add(100, setTVFrame);
 		}
+
+		this.game.input.keyboard.addKey(Phaser.Keyboard.LEFT).onDown.add(this.changeTitleOption, this);
+		this.game.input.keyboard.addKey(Phaser.Keyboard.RIGHT).onDown.add(this.changeTitleOption, this);
+
 		this.mainGroup = this.game.add.group();
 		this.cityGroup = this.game.add.group(this.mainGroup);
 		this.backgroundGroup = this.game.add.group(this.mainGroup);
@@ -255,6 +271,10 @@ var CatCafe = {
 		logoSprite.animations.add('blink', [0,1], 2, true);
 		logoSprite.animations.play('blink');
 		this.game.add.sprite(96, 48, 'title-tiles', 2, this.titleScreenGroup);
+		this.gameTypeSelectSprite = this.game.add.sprite(50, 158, 'tileset', 208, this.titleScreenGroup);
+		this.gameTypeSelectSprite.animations.add('idle', [208, 209, 210, 211, 212, 213], 6, true);
+		this.gameTypeSelectSprite.animations.play('idle');
+		
 
 		this.menuMusic = this.game.add.audio('menu',0.5, true);
 		this.gameMusic = this.game.add.audio('game',0.5, true);
@@ -445,9 +465,10 @@ var CatCafe = {
 		this.updateStageNumber();
 		this.hour = 7;
 		this.updateTime();
-		if (num > stageMap.a.length - 1)
-			num = stageMap.a.length - 1;
-		var specs = stageMap.a[num];
+		var baseStageMap = stageMap[this.gameASelected?'a':'b'];
+		if (num > baseStageMap.length - 1)
+			num = baseStageMap.length - 1;
+		var specs = baseStageMap[num];
 		for (var i = 0; i < specs.holyCats; i++){
 			this.game.time.events.add(i*5000, this.placeHolyCat, this);
 		}

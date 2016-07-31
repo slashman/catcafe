@@ -330,6 +330,8 @@ var CatCafe = {
 		this.game.time.events.add(Util.rand(8,12)*1000, this.setWanderingCat, this);
 	},
 	updateTime: function(){
+		if (Pera.dead)
+			return;
 		this.hour++;
 		for (var i = 0; i < this.hourDigits.length; i++){
 			this.hourDigits[i].loadTexture('ui', 0);

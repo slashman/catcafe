@@ -130,29 +130,8 @@ var FOOD_TILES = {
 };
 
 var SPECS = {
-	table1: {
+	table: {
 		tile: 192,
-		w: 15,
-		h: 8,
-		xoff: 9,
-		yoff: 24
-	},
-	table2: {
-		tile: 193,
-		w: 15,
-		h: 8,
-		xoff: 9,
-		yoff: 24
-	},
-	table3: {
-		tile: 204,
-		w: 15,
-		h: 8,
-		xoff: 9,
-		yoff: 24
-	},
-	table4: {
-		tile: 205,
 		w: 15,
 		h: 8,
 		xoff: 9,
@@ -216,9 +195,10 @@ var CatCafe = {
 	},
 	addObstacle: function(type, x, y){
 		if (type === 'table'){
-			type = type+Util.rand(1,4);
 			this.spawnPoints.push({x: x+8, y: y+24});
 			this.spawnPoints.push({x: x + 26, y: y+24});
+			this.game.add.sprite(x-9,y, 'tileset', 204, this.garbageGroup);
+			this.game.add.sprite(x+8,y, 'tileset', 205, this.garbageGroup);
 		}
 		var specs = SPECS[type];
 		var boundary = this.game.add.sprite(x,y, 'tileset', specs.tile, this.entitiesGroup);

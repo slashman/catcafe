@@ -26,7 +26,7 @@ var PhaserStates = {
 		this.game.load.image('title', 'img/title.png');
 		this.game.load.image('ending', 'img/ending.png');
 		this.game.load.image('blank', 'img/blank.png');
-		this.game.load.spritesheet('messages', 'img/messages.png', 96, 8);
+		this.game.load.spritesheet('messages', 'img/messages.png', 128, 8);
 		this.game.load.spritesheet('tileset', 'img/tileset.png', 32, 32);
 		this.game.load.spritesheet('ui', 'img/ui.png', 8, 8);
 		this.game.load.spritesheet('title-tiles', 'img/title-tiles-256-64.png', 256, 64);
@@ -236,8 +236,7 @@ var CatCafe = {
 		Pera.endStage();
 		this.currentStage = 0;
 		this.setStage(0);
-		this.gameActive = true; 
-		this.game.time.events.add(DAY_DURATION*1000, this.endDay, this);
+		this.startStage();
 	},
 	changeTitleOption: function(){
 		if (!this.titleScreenGroup.visible){
@@ -293,7 +292,7 @@ var CatCafe = {
 		this.gameOverSprite = this.game.add.sprite(100, 224, 'messages', 0, this.hudGroup);
 		this.pauseSprite = this.game.add.sprite(116, 224, 'messages', 1, this.hudGroup);
 		this.pauseSprite.visible = false;
-		this.dayEndsSprite = this.game.add.sprite(100, 224, 'messages', 2, this.hudGroup);
+		this.dayEndsSprite = this.game.add.sprite(80, 224, 'messages', 2, this.hudGroup);
 		this.dayEndsSprite.visible = false;
 		
 		this.game.add.sprite(0, 0, 'city', 0, this.cityGroup);
@@ -354,7 +353,6 @@ var CatCafe = {
 	titleScreenAction: function(){
 		this.newGame();
 		this.menuMusic.stop();
-		this.gameMusic.play();
 	},
 	setWanderingCat: function(){
 		var leftToRight = Math.random() > 0.5;
@@ -414,8 +412,9 @@ var CatCafe = {
 		if (Pera.dead)
 			return;
 		this.gameActive = false;
+		this.dayEndsSprite.loadTexture('messages', 2);
 		this.dayEndsSprite.visible = true;
-		this.destroyStage();
+		this.gameMusic.stop();
 		Pera.endStage();
 		if (this.currentStage == 6){
 			Pera.dead = true;
@@ -427,10 +426,11 @@ var CatCafe = {
 	increaseStage: function(){
 		if (Pera.dead)
 			return;
+		this.destroyStage();
 		this.currentStage++;
 		this.setStage(this.currentStage);
-		this.game.time.events.add(DAY_DURATION*1000, this.endDay, this);
-		this.gameActive = true; 
+		this.game.time.events.add(3*1000, this.startStage, this);
+		this.dayEndsSprite.loadTexture('messages', 3);
 	},
 	update: function(){
 		this.game.physics.arcade.collide(Pera.sprite, this.kitchen, hitKitchen, null, this);
@@ -542,28 +542,39 @@ var CatCafe = {
 		this.stageSprites.push(Pera.sprite);
 		Pera.sprite.x = 20;
 		Pera.sprite.y = 140;
-		Pera.startStage();
+		
 		this.updateStageNumber();
 		this.hour = 7;
+		
+		var baseStageMap = stageMap[this.gameASelected?'a':'b'];
+		if (num > baseStageMap.length - 1)
+			num = baseStageMap.length - 1;
+		var specs = baseStageMap[num];
+
+		var tableLayout = TABLE_LAYOUTS[specs.tables];
+		for (var i = 0; i < tableLayout.length; i++){
+			this.addObstacle('table', TABLE_POSITIONS[tableLayout[i]].x, TABLE_POSITIONS[tableLayout[i]].y);
+		}
+		for (var i = 0; i < specs.cats; i++){
+			this.addCat();
+		}
+	},
+	startStage: function(){
+		Pera.startStage();
 		this.updateTime();
 		var baseStageMap = stageMap[this.gameASelected?'a':'b'];
+		var num = this.currentStage;
 		if (num > baseStageMap.length - 1)
 			num = baseStageMap.length - 1;
 		var specs = baseStageMap[num];
 		for (var i = 0; i < specs.holyCats; i++){
 			this.game.time.events.add(i*5000, this.placeHolyCat, this);
 		}
-
-		var tableLayout = TABLE_LAYOUTS[specs.tables];
-		for (var i = 0; i < tableLayout.length; i++){
-			this.addObstacle('table', TABLE_POSITIONS[tableLayout[i]].x, TABLE_POSITIONS[tableLayout[i]].y);
-		}
-
-		for (var i = 0; i < specs.cats; i++){
-			this.addCat();
-		}
-
+		this.gameMusic.play();
+		Pera.dead = false;
+		this.game.time.events.add(DAY_DURATION*1000, this.endDay, this);
 		this.dayEndsSprite.visible = false;
+		this.gameActive = true; 
 	}
 }
 

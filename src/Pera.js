@@ -163,7 +163,7 @@ module.exports = {
 		} 
 	},
 	update: function(){
-		if (this.scared || this.dead){
+		if (this.scared || this.dead || !this.catCafe.gameActive){
 			return;
 		}
 		this.sprite.body.drag.x = 0;
@@ -246,7 +246,7 @@ module.exports = {
 		this.sprite.animations.play('celebrate');
 	},
 	startStage: function(){
-		this.dead = false;
+		//this.dead = false;
 		this.sprite.x = 20;
 		this.sprite.y = 140;
 		if (this._flipped)

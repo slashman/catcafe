@@ -40,7 +40,7 @@ Cat.prototype = {
 		if (!this.doReact()){
 			return;
 		}
-		if (this.catCafe.gameOver){
+		if (this.catCafe.gameOver || !this.catCafe.gameActive){
 			this.sprite.animations.play('idle');
 			this.sprite.body.velocity.x = 0;
     		this.sprite.body.velocity.y = 0;	

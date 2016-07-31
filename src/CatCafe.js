@@ -342,8 +342,9 @@ var CatCafe = {
 			this.hourDigits[this.hourDigits.length-i-1].loadTexture('ui', parseInt(strHour.charAt(strHour.length-i-1)));
 			this.hourDigits[this.hourDigits.length-i-1].visible = true;
 		}
-		if (this.hour < 18)
-			this.game.time.events.add(12*1000, this.updateTime, this);
+		if (this.hour < 18){
+			this.currentHourIncreaseTimer = this.game.time.events.add(12*1000, this.updateTime, this);
+		}
 	},
 	destroyStage: function(){
 		for (var i = 0; i < this.entities.length; i++){
@@ -363,6 +364,7 @@ var CatCafe = {
 		}
 		this.stageSprites = [];
 		this.busy = {};
+		this.game.time.events.remove(this.currentHourIncreaseTimer);
 	},
 	endDay: function(){
 		if (Pera.dead)

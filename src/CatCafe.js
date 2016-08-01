@@ -33,6 +33,7 @@ var PhaserStates = {
 
 		this.game.load.audio('menu', ['ogg/menu.ogg', 'mp3/menu.mp3']);
 		this.game.load.audio('game', ['ogg/game.ogg', 'mp3/game.mp3']);
+		this.game.load.audio('cats', ['ogg/cats.ogg', 'mp3/cats.mp3']);
 
 		this.game.load.audio('Get_Food_From_Kitchen', ['wav/Get_Food_From_Kitchen.wav']);
 		this.game.load.audio('Give_Food_To_Kitten', ['wav/Give_Food_To_Kitten.wav']);
@@ -353,6 +354,7 @@ var CatCafe = {
 
 		this.menuMusic = this.game.add.audio('menu',0.5, true);
 		this.gameMusic = this.game.add.audio('game',0.5, true);
+		this.endingMusic = this.game.add.audio('cats',0.5, true);
 		this.menuMusic.play();
 
 		this.endingScreenGroup = this.game.add.group();
@@ -381,9 +383,10 @@ var CatCafe = {
 		this.arrowSprite.visible = false;
 		this.endingScreenGroup.visible = true;
 		this.gameMusic.stop();
-		this.menuMusic.play(); //TODO: Victory Music
+		this.endingMusic.play();
 	},
 	showTitleScreen: function(){
+		this.endingMusic.stop();
 		this.endingScreenGroup.visible = false;
 		this.titleScreenGroup.visible = true;
 		this.menuMusic.play();

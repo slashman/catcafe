@@ -218,7 +218,8 @@ var CatCafe = {
 			Pera.kill();
 			this.gameOverSprite.visible = true;
 			this.gameOver = true;
-
+			this.holdUpSprite.visible = false;
+			this.arrowSprite.visible = false;
 		}
 	},
 	newGame: function(){
@@ -294,7 +295,14 @@ var CatCafe = {
 		this.pauseSprite.visible = false;
 		this.dayEndsSprite = this.game.add.sprite(80, 224, 'messages', 2, this.hudGroup);
 		this.dayEndsSprite.visible = false;
-		
+
+		this.holdUpSprite = this.game.add.sprite(5, 41, 'tileset', 224, this.hudGroup);
+		this.arrowSprite = this.game.add.sprite(5, 100, 'tileset', 225, this.hudGroup);
+		var tween = this.game.add.tween(this.arrowSprite).to({y: 90}, 1500, Phaser.Easing.None,true, 0, Number.MAX_VALUE, true);
+		tween.start();
+		this.holdUpSprite.visible = false;
+		this.arrowSprite.visible = false;
+
 		this.game.add.sprite(0, 0, 'city', 0, this.cityGroup);
 		this.game.add.sprite(0, 0, 'bground', 0, this.backgroundGroup);
 		this.garbageGroup = this.game.add.group(this.backgroundGroup);
@@ -341,6 +349,8 @@ var CatCafe = {
 
 	},
 	showEnding: function(){
+		this.holdUpSprite.visible = false;
+		this.arrowSprite.visible = false;
 		this.endingScreenGroup.visible = true;
 		this.gameMusic.stop();
 		this.menuMusic.play(); //TODO: Victory Music
@@ -411,6 +421,8 @@ var CatCafe = {
 	endDay: function(){
 		if (Pera.dead)
 			return;
+		this.holdUpSprite.visible = false;
+		this.arrowSprite.visible = false;
 		this.gameActive = false;
 		this.dayEndsSprite.loadTexture('messages', 2);
 		this.dayEndsSprite.visible = true;
@@ -575,6 +587,11 @@ var CatCafe = {
 		this.game.time.events.add(DAY_DURATION*1000, this.endDay, this);
 		this.dayEndsSprite.visible = false;
 		this.gameActive = true; 
+
+		if (this.currentStage == 0){
+			this.holdUpSprite.visible = true;
+			this.arrowSprite.visible = true;
+		} 
 	}
 }
 

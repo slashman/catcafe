@@ -93,6 +93,14 @@ Cat.prototype = {
 		    		}	
 		    	}
 		    }
+		    // Randomly Meow
+		    if (Util.chance(2)){
+		    	switch (Util.rand(0,2)){
+		    		case 0: this.catCafe.playSFX('Meow'); break;
+		    		case 1: this.catCafe.playSFX('Meow(2)'); break;
+		    		case 2: this.catCafe.playSFX('Purr'); break;
+		    	}
+		    }
 		}
 		if ((this.sprite.body.velocity.x > 0 && this._flipped) || 
 			(this.sprite.body.velocity.x < 0 && !this._flipped)){
@@ -139,6 +147,7 @@ Cat.prototype = {
         this.sprite.body.velocity.x = this.attackVector.x * (50+Util.rand(0,20));
         this.sprite.body.velocity.y = this.attackVector.y * 20;
 		this.sprite.animations.play('jump');
+		this.catCafe.playSFX('Kitten_Jumps');
 		if ((this.sprite.body.velocity.x > 0 && this._flipped) || 
 			(this.sprite.body.velocity.x < 0 && !this._flipped)){
 			this._flipSprite();

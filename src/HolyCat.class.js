@@ -106,6 +106,7 @@ HolyCat.prototype = {
 		this.globe.frame = 195;
 		this.globe.visible = true;
 		this.wantedFoodSprite.loadTexture('tileset', FOOD_TILES[this.wantedFood]);
+		this.catCafe.playSFX('Meow');
 		this.wantedFoodSprite.visible = true;
 	},
 	warnGrumpy: function(){
@@ -114,6 +115,7 @@ HolyCat.prototype = {
 		if (!this.wantedFood)
 			return;
 		this.globe.animations.play('blink');
+		this.catCafe.playSFX('Kitten_Tired_of_Waiting');
 		if (this.meows)
 			this.sprite.animations.play('meow');
 		this.isGrumpy = true;
@@ -125,6 +127,7 @@ HolyCat.prototype = {
 			return;
 		this.isGrumpy = false;
 		this.catCafe.reduceHearts();
+		this.catCafe.playSFX('Kitten_Left');
 		this.wantedFood = false;
 		this.globe.visible = false;
 		this.wantedFoodSprite.visible = false;
@@ -138,18 +141,21 @@ HolyCat.prototype = {
 		if (this.dead || this.target.dead)
 			return;
 		var foodType = this.target.currentFood;
-		if (foodType && foodType === this.wantedFood){
-			this.sprite.animations.play('idle');
-			this.target.deliverFood();
-			this.wantedFood = false;
-			this.isGrumpy = false;
-			this.globe.visible = false;
-			this.wantedFoodSprite.visible = false;
-			this.eating = true;
-			this.catCafe.game.time.events.add(20000, this.finishEating, this);
-			this.foodSprite.loadTexture('tileset', FOOD_TILES[foodType]);
-			this.foodSprite.visible = true;
-
+		if (foodType){
+			if (foodType === this.wantedFood){
+				this.sprite.animations.play('idle');
+				this.target.deliverFood();
+				this.wantedFood = false;
+				this.isGrumpy = false;
+				this.globe.visible = false;
+				this.wantedFoodSprite.visible = false;
+				this.eating = true;
+				this.catCafe.game.time.events.add(20000, this.finishEating, this);
+				this.foodSprite.loadTexture('tileset', FOOD_TILES[foodType]);
+				this.foodSprite.visible = true;
+			} else {
+				this.catCafe.playSFX('Wrong_Food');
+			}
 		}
 	},
 	finishEating: function(){

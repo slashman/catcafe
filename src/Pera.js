@@ -75,6 +75,7 @@ module.exports = {
 		this.cakeSprite.visible = false;
 		this.puddinSprite.visible = false;
 		this.currentFood = 'milkShake';
+		this.catCafe.playSFX('Get_Food_From_Kitchen');
 	},
 	pickCoffee: function(){
 		this.coffeeSprite.visible = true;
@@ -83,6 +84,7 @@ module.exports = {
 		this.puddinSprite.visible = false;
 		this.binSprite.visible = true;
 		this.currentFood = 'coffee';
+		this.catCafe.playSFX('Get_Food_From_Kitchen');
 	},
 	pickCake: function(){
 		this.cakeSprite.visible = true;
@@ -91,6 +93,7 @@ module.exports = {
 		this.puddinSprite.visible = false;
 		this.binSprite.visible = true;
 		this.currentFood = 'cake';
+		this.catCafe.playSFX('Get_Food_From_Kitchen');
 	},
 	pickPuddin: function(){
 		this.cakeSprite.visible = false;
@@ -99,6 +102,7 @@ module.exports = {
 		this.milkShakeSprite.visible = false;
 		this.binSprite.visible = true;
 		this.currentFood = 'puddin';
+		this.catCafe.playSFX('Get_Food_From_Kitchen');
 	},
 	pickNone: function(){
 		this.cakeSprite.visible = false;
@@ -124,6 +128,7 @@ module.exports = {
 		this.catCafe.game.time.events.add(1000, this.recoverMovement, this);
 		this.catCafe.resetFoodSprite();
 		this.catCafe.reduceHearts();
+		this.catCafe.playSFX('Kitten_Drops_Food');
 	},
 	recoverMovement: function(){
 		this.scared = false;
@@ -132,6 +137,7 @@ module.exports = {
 		this.pickNone();
 		this.catCafe.resetFoodSprite();
 		this.catCafe.increaseScore();
+		this.catCafe.playSFX('Give_Food_To_Kitten');
 	},
 	_flipSprite: function(){
 		this._flipped = !this._flipped;
@@ -158,6 +164,7 @@ module.exports = {
 			this.catCafe.game.paused = false;
 			this.catCafe.pauseSprite.visible = false;
 		} else {
+			this.catCafe.playSFX('Meow');
 			this.catCafe.game.paused = true;
 			this.catCafe.pauseSprite.visible = true;
 		} 
@@ -232,7 +239,7 @@ module.exports = {
     	this.puddinSprite.animations.stop();
     	this.cakeSprite.animations.stop();
 	},
-	endStage: function(){
+	reset: function(){
 		this.dead = false;
 		this.stop();
 		this.sprite.body.velocity.x = 0;
@@ -240,9 +247,13 @@ module.exports = {
 		this.pickNone();
 		this.catCafe.resetFoodSprite();
 		this.sprite.frame = 13;
+	},
+	endStage: function(){
+		this.reset();
 		this.catCafe.game.time.events.add(500, this.cheer, this);
 	},
 	cheer: function(){
+		this.catCafe.playSFX('Stage_Clear');
 		this.sprite.animations.play('celebrate');
 	},
 	startStage: function(){

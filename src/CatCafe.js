@@ -34,6 +34,18 @@ var PhaserStates = {
 		this.game.load.audio('menu', ['ogg/menu.ogg', 'mp3/menu.mp3']);
 		this.game.load.audio('game', ['ogg/game.ogg', 'mp3/game.mp3']);
 
+		this.game.load.audio('Get_Food_From_Kitchen', ['wav/Get_Food_From_Kitchen.wav']);
+		this.game.load.audio('Give_Food_To_Kitten', ['wav/Give_Food_To_Kitten.wav']);
+		this.game.load.audio('Kitten_Drops_Food', ['wav/Kitten_Drops_Food.wav']);
+		this.game.load.audio('Kitten_Jumps', ['wav/Kitten_Jumps.wav']);
+		this.game.load.audio('Kitten_Left', ['wav/Kitten_Left.wav']);
+		this.game.load.audio('Kitten_Tired_of_Waiting', ['wav/Kitten_Tired_of_Waiting.wav']);
+		this.game.load.audio('Wrong_Food', ['wav/Wrong_Food.wav']);
+		this.game.load.audio('Meow', ['wav/Meow.wav']);
+		this.game.load.audio('Meow(2)', ['wav/Meow(2).wav']);
+		this.game.load.audio('Purr', ['wav/Purr.wav']);
+		this.game.load.audio('Stage_Clear', ['wav/Stage_Clear.wav']);
+		this.game.load.audio('Start_Game', ['wav/Start_Game.wav']);
 	},
 	create: function() {
 		if (TVEmulation.strech43){
@@ -225,6 +237,7 @@ var CatCafe = {
 	},
 	newGame: function(){
 		this.titleScreenGroup.visible = false;
+		this.menuMusic.stop();
 		Pera.dead = false;
 		this.gameOver = false;
 		this.currentHeart = 10;
@@ -235,7 +248,7 @@ var CatCafe = {
 		this.updateScore();
 		this.gameOverSprite.visible = false;
 		this.destroyStage();
-		Pera.endStage();
+		Pera.reset();
 		this.currentStage = 0;
 		this.setStage(0);
 		this.startStage();
@@ -244,6 +257,7 @@ var CatCafe = {
 		if (!this.titleScreenGroup.visible){
 			return;
 		}
+		this.playSFX('Start_Game');
 		this.gameASelected = !this.gameASelected;
 		if (this.gameASelected){
 			this.gameTypeSelectSprite.x = 50;
@@ -348,6 +362,19 @@ var CatCafe = {
 		endingCharacter.animations.add('celebrate', [14, 15], 4, true);
 		endingCharacter.animations.play('celebrate');
 
+
+		this.SFX_MAP['Get_Food_From_Kitchen'] = this.game.add.audio('Get_Food_From_Kitchen',0.5, false);
+		this.SFX_MAP['Give_Food_To_Kitten'] = this.game.add.audio('Give_Food_To_Kitten',0.5, false);
+		this.SFX_MAP['Kitten_Drops_Food'] = this.game.add.audio('Kitten_Drops_Food',0.5, false);
+		this.SFX_MAP['Kitten_Jumps'] = this.game.add.audio('Kitten_Jumps',0.5, false);
+		this.SFX_MAP['Kitten_Left'] = this.game.add.audio('Kitten_Left',0.5, false);
+		this.SFX_MAP['Kitten_Tired_of_Waiting'] = this.game.add.audio('Kitten_Tired_of_Waiting',0.5, false);
+		this.SFX_MAP['Wrong_Food'] = this.game.add.audio('Wrong_Food',0.5, false);
+		this.SFX_MAP['Meow'] = this.game.add.audio('Meow',0.5, false);
+		this.SFX_MAP['Meow(2)'] = this.game.add.audio('Meow(2)',0.5, false);
+		this.SFX_MAP['Purr'] = this.game.add.audio('Purr',0.5, false);
+		this.SFX_MAP['Stage_Clear'] = this.game.add.audio('Stage_Clear',0.5, false);
+		this.SFX_MAP['Start_Game'] = this.game.add.audio('Start_Game',0.5, false);
 	},
 	showEnding: function(){
 		this.holdUpSprite.visible = false;
@@ -362,8 +389,8 @@ var CatCafe = {
 		this.menuMusic.play();
 	},
 	titleScreenAction: function(){
-		this.newGame();
-		this.menuMusic.stop();
+		this.playSFX('Start_Game');
+		this.game.time.events.add(1*1000, this.newGame, this);
 	},
 	setWanderingCat: function(){
 		var leftToRight = Math.random() > 0.5;

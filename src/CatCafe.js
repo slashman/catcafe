@@ -231,6 +231,7 @@ var CatCafe = {
 		}
 	},
 	newGame: function(){
+		this.blockScreenAction = false;
 		this.titleScreenGroup.visible = false;
 		this.menuMusic.stop();
 		Pera.dead = false;
@@ -386,6 +387,9 @@ var CatCafe = {
 		this.menuMusic.play();
 	},
 	titleScreenAction: function(){
+		if (this.blockScreenAction)
+			return;
+		this.blockScreenAction = true;
 		this.playSFX('Start_Game');
 		this.game.time.events.add(1*1000, this.newGame, this);
 	},

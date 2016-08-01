@@ -61,10 +61,12 @@ module.exports = {
 	},
 	initDPad: function(){
 		this.pad = this.catCafe.game.plugins.add(Phaser.VirtualJoystick);
-		this.stick = this.pad.addDPad(0, 0, 20, 'dpad');
+		//this.stick = this.pad.addDPad(0, 0, 20, 'dpad');
+		this.stick = this.pad.addStick(0, 0, 200, 'generic');
 		this.stick.scale = 0.65;
         this.stick.alignBottomLeft(0);
-        this.actionButton = this.pad.addButton(200, 270, 'dpad', 'button1-up', 'button1-down');
+        //this.actionButton = this.pad.addButton(200, 270, 'dpad', 'button1-up', 'button1-down');
+        this.actionButton = this.pad.addButton(200, 270, 'generic', 'button1-up', 'button1-down');
         this.actionButton.scale = 1;
         this.actionButton.onDown.add(this.onActionDown, this);
 	},
@@ -144,16 +146,24 @@ module.exports = {
 		this.sprite.scale.x *= -1;
 	},
 	isLeftDown: function(){
-		return this.cursors.left.isDown || (this.stick && this.stick.isDown && this.stick.direction === Phaser.LEFT);
+		return this.cursors.left.isDown || 
+			(this.dpad && this.dpad.isDown && this.dpad.direction === Phaser.LEFT) ||
+			(this.stick && this.stick.isDown && this.stick.octant >= 135 && this.stick.octant <= 225);
 	},
 	isRightDown: function(){
-		return this.cursors.right.isDown || (this.stick && this.stick.isDown && this.stick.direction === Phaser.RIGHT);
+		return this.cursors.right.isDown || 
+			(this.dpad && this.dpad.isDown && this.dpad.direction === Phaser.RIGHT) ||
+			(this.stick && this.stick.isDown && (this.stick.octant <= 45 || this.stick.octant >= 315)) ;
 	},
 	isUpDown: function(){
-		return this.cursors.up.isDown || (this.stick && this.stick.isDown && this.stick.direction === Phaser.UP);
+		return this.cursors.up.isDown || 
+			(this.dpad && this.dpad.isDown && this.dpad.direction === Phaser.UP) ||
+			(this.stick && this.stick.isDown && this.stick.octant >= 225 && this.stick.octant <= 315);
 	},
 	isDownDown: function(){
-		return this.cursors.down.isDown || (this.stick && this.stick.isDown && this.stick.direction === Phaser.DOWN);
+		return this.cursors.down.isDown || 
+			(this.dpad && this.dpad.isDown && this.dpad.direction === Phaser.DOWN) ||
+			(this.stick && this.stick.isDown && this.stick.octant >= 45 && this.stick.octant <= 135);
 	},
 	onActionDown: function(){
 		if (this.catCafe.titleScreenGroup.visible){

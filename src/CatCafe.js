@@ -17,9 +17,11 @@ var TVEmulation = {
 
 var PhaserStates = {
 	preload: function() {
+		this.game.device.desktop = false;
 		if (!this.game.device.desktop){
 			this.game.load.script('joystick', 'phaser-virtual-joystick.min.js');
-			this.game.load.atlas('dpad', 'img/dpad.png', 'dpad.json');
+			//this.game.load.atlas('dpad', 'img/dpad.png', 'dpad.json');
+			this.load.atlas('generic', 'img/generic-joystick.png', 'generic-joystick.json');
 		}
 		this.game.load.image('bground', 'img/bground.png');
 		this.game.load.image('city', 'img/city.png');
@@ -49,7 +51,7 @@ var PhaserStates = {
 		this.game.load.audio('Start_Game', ['wav/Start_Game.wav']);
 	},
 	create: function() {
-		if (TVEmulation.strech43){
+		if (TVEmulation.strech43 && this.game.device.desktop){
 			this.scale.scaleMode = Phaser.ScaleManager.USER_SCALE;
 			this.scale.setResizeCallback(CatCafe.recalcUserScale, CatCafe);
 			CatCafe.recalcUserScale();
@@ -471,6 +473,15 @@ var CatCafe = {
 		this.dayEndsSprite.loadTexture('messages', 3);
 	},
 	update: function(){
+		if (this.titleScreenGroup.visible){
+			if (!this.joystickInputCounter)
+				this.joystickInputCounter = 0;
+			if (this.joystickInputCounter-- <= 0 && (Pera.isLeftDown() || Pera.isRightDown())){
+				this.changeTitleOption();
+				this.joystickInputCounter = 40;
+			}
+			return;
+		}
 		this.game.physics.arcade.collide(Pera.sprite, this.kitchen, hitKitchen, null, this);
 		this.game.physics.arcade.collide(Pera.sprite, this.holyCatsGroup, holyCatCollide, null, this);
 		this.game.physics.arcade.collide(this.entitiesGroup, this.boundariesGroup, null, null, this);

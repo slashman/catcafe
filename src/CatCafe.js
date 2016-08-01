@@ -51,8 +51,8 @@ var PhaserStates = {
 	create: function() {
 		if (TVEmulation.strech43){
 			this.scale.scaleMode = Phaser.ScaleManager.USER_SCALE;
-            var ratio = getRatio(256, 240);
-            this.scale.setUserScale(1.33*ratio.x, 1*ratio.y, 0, 0);
+			this.scale.setResizeCallback(CatCafe.recalcUserScale, CatCafe);
+			CatCafe.recalcUserScale();
 		} else {
 			this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;	
 		}
@@ -168,12 +168,7 @@ function setTVFrame(){
 	} else if (TVEmulation.scanlinesOverlay){
 		var tvOverlay = document.getElementById('scanlines');
 		tvOverlay.style.display = 'block';
-		var canvas = document.getElementsByTagName('canvas')[0];
-        var canvasMargin = parseInt(canvas.style.marginLeft.substr(0, canvas.style.marginLeft.indexOf("px")));
-        var originalDistance = 418;
-        var scale = tvOverlay.clientWidth / 1755;
-        var realDistance = Math.round(originalDistance * scale);
-        tvOverlay.style.left = (canvasMargin-realDistance)+"px" ;
+		CatCafe.relocateTVOverlay();
 	}
 	if (TVEmulation.tvBackground){
 		var body = document.getElementsByTagName('body')[0];
@@ -623,6 +618,20 @@ var CatCafe = {
 			this.holdUpSprite.visible = true;
 			this.arrowSprite.visible = true;
 		} 
+	},
+	recalcUserScale: function(){
+		var ratio = getRatio(256, 240);
+		this.game.scale.setUserScale(1.33*ratio.x, 1*ratio.y, 0, 0);
+		this.relocateTVOverlay();
+	},
+	relocateTVOverlay: function(){
+		var tvOverlay = document.getElementById('scanlines');
+		var canvas = document.getElementsByTagName('canvas')[0];
+        var canvasMargin = parseInt(canvas.style.marginLeft.substr(0, canvas.style.marginLeft.indexOf("px")));
+        var originalDistance = 418;
+        var scale = tvOverlay.clientWidth / 1755;
+        var realDistance = Math.round(originalDistance * scale);
+        tvOverlay.style.left = (canvasMargin-realDistance)+"px" ;
 	}
 }
 

@@ -216,6 +216,7 @@ var CatCafe = {
 		this.hearts[this.currentHeart].loadTexture('ui', 16);
 		if (this.currentHeart === 0){
 			Pera.kill();
+			this.game.time.events.remove(this.currentDayEndTimer);
 			this.gameOverSprite.visible = true;
 			this.gameOver = true;
 			this.holdUpSprite.visible = false;
@@ -584,7 +585,7 @@ var CatCafe = {
 		}
 		this.gameMusic.play();
 		Pera.dead = false;
-		this.game.time.events.add(DAY_DURATION*1000, this.endDay, this);
+		this.currentDayEndTimer = this.game.time.events.add(DAY_DURATION*1000, this.endDay, this);
 		this.dayEndsSprite.visible = false;
 		this.gameActive = true; 
 

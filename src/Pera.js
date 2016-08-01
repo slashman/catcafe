@@ -155,6 +155,12 @@ module.exports = {
 			(this.dpad && this.dpad.isDown && this.dpad.direction === Phaser.RIGHT) ||
 			(this.stick && this.stick.isDown && (this.stick.octant <= 45 || this.stick.octant >= 315)) ;
 	},
+	isJoyLeftDown: function(){
+		return (this.stick && this.stick.isDown && this.stick.octant >= 135 && this.stick.octant <= 225);
+	},
+	isJoyRightDown: function(){
+		return (this.stick && this.stick.isDown && (this.stick.octant <= 45 || this.stick.octant >= 315)) ;
+	},
 	isUpDown: function(){
 		return this.cursors.up.isDown || 
 			(this.dpad && this.dpad.isDown && this.dpad.direction === Phaser.UP) ||

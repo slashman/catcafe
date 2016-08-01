@@ -477,7 +477,7 @@ var CatCafe = {
 		if (this.titleScreenGroup.visible){
 			if (!this.joystickInputCounter)
 				this.joystickInputCounter = 0;
-			if (this.joystickInputCounter-- <= 0 && (Pera.isLeftDown() || Pera.isRightDown())){
+			if (this.joystickInputCounter-- <= 0 && (Pera.isJoyLeftDown() || Pera.isJoyRightDown())){
 				this.changeTitleOption();
 				this.joystickInputCounter = 40;
 			}

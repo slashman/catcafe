@@ -632,14 +632,20 @@ var CatCafe = {
 		} 
 	},
 	recalcUserScale: function(){
-		if (window.innerHeight > window.innerWidth/1.33){
+		var width = window.innerWidth;
+	    var height = window.innerHeight;
+		var dips = window.devicePixelRatio;
+	    width = width * dips;
+	    height = height * dips;
+
+		if (height > width/1.33){
 			this.game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;	
 			var tvOverlay = document.getElementById('scanlines');
 			tvOverlay.style.display = 'none';
 		} else {
 			this.game.scale.scaleMode = Phaser.ScaleManager.USER_SCALE;
 	    	var ratio = getRatio(256, 240);
-			this.game.scale.setUserScale(1.33*ratio.x, 1*ratio.y, 0, 0);
+			this.game.scale.setUserScale((1.33/dips)*ratio.x, ratio.y/dips, 0, 0);
 			this.relocateTVOverlay();
 		}		
 		

@@ -121,7 +121,7 @@ HolyCat.prototype = {
 		this.isGrumpy = true;
 	},
 	getGrumpy: function(){
-		if (this.dead || this.target.dead)
+		if (this.dead || this.target.dead || !this.catCafe.gameActive)
 			return;
 		if (!this.wantedFood)
 			return;

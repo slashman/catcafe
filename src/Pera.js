@@ -66,7 +66,7 @@ module.exports = {
 		this.stick.scale = 0.65;
         this.stick.alignBottomLeft(0);
         //this.actionButton = this.pad.addButton(200, 270, 'dpad', 'button1-up', 'button1-down');
-        this.actionButton = this.pad.addButton(238, 310, 'generic', 'button1-up', 'button1-down');
+        this.actionButton = this.pad.addButton(228, this.catCafe.gameHeight-50, 'generic', 'button1-up', 'button1-down');
         this.actionButton.scale = 0.5;
         this.actionButton.onDown.add(this.onActionDown, this);
 	},

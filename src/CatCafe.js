@@ -21,7 +21,7 @@ var PhaserStates = {
 			this.game.load.script('joystick', 'phaser-virtual-joystick.min.js');
 			//this.game.load.atlas('dpad', 'img/dpad.png', 'dpad.json');
 			this.load.atlas('generic', 'img/generic-joystick.png', 'generic-joystick.json');
-			this.game.load.image('padbground', 'img/padbground.png');
+			this.game.load.image('padbground', 'img/controller_fc.png');
 		}
 		this.game.load.image('bground', 'img/bground.png');
 		this.game.load.image('city', 'img/city.png');
@@ -79,6 +79,15 @@ function getRatio (w, h) {
         x: scaleX > scaleY ? scaleY : scaleX,
         y: scaleX > scaleY ? scaleY : scaleX
     };
+}
+
+function getDeviceH2WRatio(){
+	var width = window.innerWidth;
+    var height = window.innerHeight;
+	var dips = window.devicePixelRatio;
+    width = width * dips;
+    height = height * dips;
+    return height/width;
 }
 
 
@@ -265,7 +274,14 @@ var CatCafe = {
 	},
 	start: function(){
 		if (!this.game.device.desktop){
-			this.game.scale.setGameSize(256, 360);
+			var ratio = getDeviceH2WRatio();
+			if (ratio <= 0.9){
+				// Almost square, or horizontal layout, don't change scale!
+			} else {
+				this.gameHeight = Math.round(256*ratio);
+				this.game.scale.setGameSize(256, this.gameHeight);
+				this.game.add.sprite(-15, this.gameHeight - 205, 'padbground');
+			}
 			this.initBackButton();
 		} else {
 			this.game.time.events.add(500, setTVFrame);
@@ -365,7 +381,7 @@ var CatCafe = {
 		endingCharacter.animations.play('celebrate');
 
 		if (!this.game.device.desktop){
-			this.game.add.sprite(0, 240, 'padbground');
+			
 		}
 
 		this.SFX_MAP['Get_Food_From_Kitchen'] = this.game.add.audio('Get_Food_From_Kitchen',0.5, false);

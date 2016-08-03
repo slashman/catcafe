@@ -174,6 +174,11 @@ module.exports = {
 	onActionDown: function(){
 		if (this.catCafe.titleScreenGroup.visible){
 			this.catCafe.titleScreenAction();
+		} else if (this.catCafe.onHelpScreen){
+			this.catCafe.onHelpScreen = false;
+			this.catCafe.arrowSprite.visible = false;
+			this.catCafe.helpSprite.visible = false;
+			this.catCafe.doStartStage();
 		} else if (this.dead || this.catCafe.endingScreenGroup.visible){
 			this.catCafe.showTitleScreen();
 		} else if (this.catCafe.game.paused){

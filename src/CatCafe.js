@@ -27,6 +27,7 @@ var PhaserStates = {
 		this.game.load.image('title', 'img/title.png');
 		this.game.load.image('ending', 'img/ending.png');
 		this.game.load.image('blank', 'img/blank.png');
+		this.game.load.image('help', 'img/help.png');
 		this.game.load.spritesheet('messages', 'img/messages.png', 128, 8);
 		this.game.load.spritesheet('tileset', 'img/tileset.png', 32, 32);
 		this.game.load.spritesheet('ui', 'img/ui.png', 8, 8);
@@ -310,6 +311,8 @@ var CatCafe = {
 
 		this.holdUpSprite = this.game.add.sprite(5, 41, 'tileset', 224, this.hudGroup);
 		this.arrowSprite = this.game.add.sprite(5, 100, 'tileset', 225, this.hudGroup);
+		this.helpSprite = this.game.add.sprite(0, 54, 'help', 0, this.hudGroup);
+
 		var tween = this.game.add.tween(this.arrowSprite).to({y: 90}, 1500, Phaser.Easing.None,true, 0, Number.MAX_VALUE, true);
 		tween.start();
 		this.holdUpSprite.visible = false;
@@ -612,7 +615,25 @@ var CatCafe = {
 	},
 	startStage: function(){
 		Pera.startStage();
-		this.updateTime();
+		this.gameMusic.play();
+		this.dayEndsSprite.visible = false;
+		if (this.currentStage == 0){
+			this.arrowSprite.visible = true;
+			this.helpSprite.visible = true;
+			this.onHelpScreen = true;
+		} else {
+			this.doStartStage();
+		}
+	},
+	doStartStage: function(){
+		if (this.currentStage == 0){
+			this.holdUpSprite.visible = true;
+		} else {
+			this.holdUpSprite.visible = false;
+		}
+
+
+		Pera.dead = false;
 		var baseStageMap = stageMap[this.gameASelected?'a':'b'];
 		var num = this.currentStage;
 		if (num > baseStageMap.length - 1)
@@ -621,16 +642,9 @@ var CatCafe = {
 		for (var i = 0; i < specs.holyCats; i++){
 			this.game.time.events.add(i*5000, this.placeHolyCat, this);
 		}
-		this.gameMusic.play();
-		Pera.dead = false;
+		this.updateTime();
 		this.currentDayEndTimer = this.game.time.events.add(DAY_DURATION*1000, this.endDay, this);
-		this.dayEndsSprite.visible = false;
 		this.gameActive = true; 
-
-		if (this.currentStage == 0){
-			this.holdUpSprite.visible = true;
-			this.arrowSprite.visible = true;
-		} 
 	},
 	recalcUserScale: function(){
 		var width = window.innerWidth;

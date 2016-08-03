@@ -327,8 +327,8 @@ var CatCafe = {
 		this.dayEndsSprite.visible = false;
 
 		this.holdUpSprite = this.game.add.sprite(5, 41, 'tileset', 224, this.hudGroup);
-		this.arrowSprite = this.game.add.sprite(5, 100, 'tileset', 225, this.hudGroup);
-		this.helpSprite = this.game.add.sprite(0, 54, 'help', 0, this.hudGroup);
+		this.arrowSprite = this.game.add.sprite(13, 96, 'tileset', 225, this.hudGroup);
+		this.helpSprite = this.game.add.sprite(0, 45, 'help', 0, this.hudGroup);
 
 		var tween = this.game.add.tween(this.arrowSprite).to({y: 90}, 1500, Phaser.Easing.None,true, 0, Number.MAX_VALUE, true);
 		tween.start();

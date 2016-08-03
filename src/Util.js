@@ -23,6 +23,14 @@ var Util = {
 			ret[i] = array[i]+val;
 		}
 		return ret;
+	},
+	sign: function(val){
+		if (val == 0)
+			return 0;
+		else if (val > 0)
+			return 1;
+		else 
+			return -1;
 	}
 }
 

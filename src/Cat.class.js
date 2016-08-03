@@ -134,8 +134,8 @@ Cat.prototype = {
 	
 	getDirection: function(){
 		return {
-			x: Math.sign(this.target.sprite.x - this.sprite.x),
-			y: Math.sign(this.target.sprite.y - this.sprite.y)
+			x: Util.sign(this.target.sprite.x - this.sprite.x),
+			y: Util.sign(this.target.sprite.y - this.sprite.y)
 		}
 	}, 
 	jump: function(){

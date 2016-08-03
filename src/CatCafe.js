@@ -263,7 +263,8 @@ var CatCafe = {
 	},
 	start: function(){
 		if (!this.game.device.desktop){
-			this.game.scale.setGameSize(256, 340);
+			this.game.scale.setGameSize(256, 360);
+			this.initBackButton();
 		} else {
 			this.game.time.events.add(500, setTVFrame);
 		}
@@ -659,6 +660,20 @@ var CatCafe = {
         var scale = tvOverlay.clientWidth / 1755;
         var realDistance = Math.round(originalDistance * scale);
         tvOverlay.style.left = (canvasMargin-realDistance)+"px" ;
+	},
+	initBackButton: function(){
+		document.addEventListener("backbutton", function(){
+			navigator.notification.confirm (
+					"Close CatCafe?",
+					function(buttonIndex){
+						if(buttonIndex == "1"){
+				            navigator.app.exitApp();
+				        }
+					}, 
+			        "Confirmation", 
+			        "Yes,No"
+			      ); 
+		}, false);
 	}
 }
 

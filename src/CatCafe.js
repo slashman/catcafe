@@ -21,6 +21,7 @@ var PhaserStates = {
 			this.game.load.script('joystick', 'phaser-virtual-joystick.min.js');
 			//this.game.load.atlas('dpad', 'img/dpad.png', 'dpad.json');
 			this.load.atlas('generic', 'img/generic-joystick.png', 'generic-joystick.json');
+			this.game.load.image('padbground', 'img/padbground.png');
 		}
 		this.game.load.image('bground', 'img/bground.png');
 		this.game.load.image('city', 'img/city.png');
@@ -363,6 +364,9 @@ var CatCafe = {
 		endingCharacter.animations.add('celebrate', [14, 15], 4, true);
 		endingCharacter.animations.play('celebrate');
 
+		if (!this.game.device.desktop){
+			this.game.add.sprite(0, 240, 'padbground');
+		}
 
 		this.SFX_MAP['Get_Food_From_Kitchen'] = this.game.add.audio('Get_Food_From_Kitchen',0.5, false);
 		this.SFX_MAP['Give_Food_To_Kitten'] = this.game.add.audio('Give_Food_To_Kitten',0.5, false);

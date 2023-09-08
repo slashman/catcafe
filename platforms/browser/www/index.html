@@ -28,26 +28,23 @@
             * Disables use of inline scripts in order to mitigate risk of XSS vulnerabilities. To change this:
                 * Enable inline JS: add 'unsafe-inline' to default-src
         -->
-        <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: https://ssl.gstatic.com 'unsafe-eval'; style-src 'self' 'unsafe-inline'; media-src *; img-src 'self' data: content:;">
+        <!--
+        meta http-equiv="Content-Security-Policy" content="default-src 'self' data: https://ssl.gstatic.com 'unsafe-eval'; style-src 'self' 'unsafe-inline'; media-src *; img-src 'self' data: content:;">
+        -->
         <meta name="format-detection" content="telephone=no">
         <meta name="msapplication-tap-highlight" content="no">
         <meta name="viewport" content="initial-scale=1, width=device-width, viewport-fit=cover">
         <meta name="color-scheme" content="light dark">
         
-        <title>Hello World</title>
-      <script type="module" crossorigin src="/assets/index-d2908c9a.js"></script>
+        <title>CatCafe</title>
+      <script type="module" crossorigin src="/assets/index-628f3e64.js"></script>
       <link rel="stylesheet" href="/assets/index-59f1f9a5.css">
     </head>
     <body>
-        <div class="app">
-            <h1>Apache Cordova</h1>
-            <div id="deviceready" class="blink">
-                <p class="event listening">Connecting to Device</p>
-                <p class="event received">Device is Ready</p>
-            </div>
-        </div>
-        <img id="scanlines" src="/assets/tv2-99d6ec3b.png" />
+        <img id="scanlines" src="/assets/tv2-99d6ec3b.png">
         <script src="cordova.js"></script>
+        <script src="/jslib/glfx.js"></script>
+        <script src="/jslib/phaser.min.js"></script>
         
     </body>
 </html>

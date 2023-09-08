@@ -13,7 +13,6 @@ import Cat from './Cat.class'
 import HolyCat from './HolyCat.class'
 import Util from './Util'
 import fakeCrt from './FakeCRT'
-import * as Phaser from 'phaser'
 
 var TVEmulation = {
 	enabled: true,

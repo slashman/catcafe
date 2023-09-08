@@ -1,5 +1,7 @@
 # Cat Cafe
 
+A game where you are the waitress on a Cat Cafe and have to deliver desserts to impatient cats.
+
 ![cat cafe title](./screenshot.png)
 
 # Developer Notes

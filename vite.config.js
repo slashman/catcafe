@@ -5,6 +5,7 @@ export default defineConfig({
   plugins: [],
   root: 'src',
   build: {
+    emptyOutDir: true,
     outDir: '../www'
   }
 })

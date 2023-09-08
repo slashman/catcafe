@@ -1,10 +1,19 @@
+/*
 var Pera = require('./Pera');
 var Lali = require('./Lali');
 var Shoey = require('./Shoey');
 var Cat = require('./Cat.class');
 var HolyCat = require('./HolyCat.class');
 var Util = require('./Util');
-var fakeCrt = require('./FakeCRT');
+var fakeCrt = require('./FakeCRT');*/
+import Pera from './Pera'
+import Lali from './Lali'
+import Shoey from './Shoey'
+import Cat from './Cat.class'
+import HolyCat from './HolyCat.class'
+import Util from './Util'
+import fakeCrt from './FakeCRT'
+import * as Phaser from 'phaser'
 
 var TVEmulation = {
 	enabled: true,
@@ -827,4 +836,5 @@ var stageMap = {
 
 window.CatCafe = CatCafe;
 
-module.exports = CatCafe;
+// module.exports = CatCafe;
+export default CatCafe

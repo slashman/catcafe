@@ -1,4 +1,4 @@
-module.exports = {
+const Lali = {
 	init: function(catCafe){
 		this.catCafe = catCafe;
 		this.sprite = catCafe.game.add.sprite(0, 74, 'tileset', 203, catCafe.backgroundGroup);
@@ -26,4 +26,6 @@ module.exports = {
 		return false;
 	}
 	
-};
+}
+
+export default Lali

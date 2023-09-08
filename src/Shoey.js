@@ -1,4 +1,5 @@
-var Util = require('./Util');
+// var Util = require('./Util');
+import Util from './Util'
 
 var Shoey = {
 	init: function(catCafe, x, y){
@@ -31,4 +32,5 @@ var Shoey = {
 	
 };
 
-module.exports = Shoey;
+//module.exports = Shoey;
+export default Shoey

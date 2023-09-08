@@ -14,11 +14,18 @@ A game where you are the waitress on a Cat Cafe and have to deliver desserts to 
 - `npm run build`
 - `cordova prepare`
 - `cordova run browser`
+- *Cordova will automatically start a browser pointing to `http://localhost:8080/index.html`*
 
 ## Running the iOS Simulator
 
-- TODO
+- `npm run build`
+- `cordova prepare`
+- Open `platforms/ios` in XCode
+- Build or Run from there
 
 ## Running on Android
 
-- TODO
+- `npm run build`
+- `cordova prepare`
+- Open `platforms/android` in Android Studio
+- Build or Run from there

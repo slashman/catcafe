@@ -1,4 +1,4 @@
-var Util = {
+const Util = {
 	distance: function(x1, y1, x2, y2){
 		return Math.sqrt( (x1-x2)*(x1-x2) + (y1-y2)*(y1-y2) );	
 	},
@@ -34,4 +34,5 @@ var Util = {
 	}
 }
 
-module.exports = Util;
+//module.exports = Util;
+export default Util

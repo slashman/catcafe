@@ -1,4 +1,5 @@
-var Util = require('./Util')
+//var Util = require('./Util')
+import Util from './Util'
 
 function addToArray(array, val){
 	var ret = [];
@@ -168,4 +169,5 @@ Cat.prototype = {
 	}
 };
 
-module.exports = Cat;
+//module.exports = Cat;
+export default Cat

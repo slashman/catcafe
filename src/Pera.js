@@ -5,7 +5,7 @@ var DESERT_FALLING = {
 	puddin: [52, 53, 54, 55, 56, 57]
 };
 
-module.exports = {
+const Pera = {
 	kitchenCounter: 0,
 	init: function(catCafe){
 		this.catCafe = catCafe;
@@ -285,3 +285,5 @@ module.exports = {
 			this._flipSprite();
 	}
 }
+
+export default Pera

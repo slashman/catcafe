@@ -1,0 +1,11 @@
+{
+  "background_color": "#FFF",
+  "display": "standalone",
+  "name": "catcafe",
+  "short_name": "catcafe",
+  "version": "com.slashwareint.catcafe",
+  "description": "Sample Apache Cordova App",
+  "author": "Apache Cordova Team",
+  "icons": [],
+  "start_url": "index.html"
+}

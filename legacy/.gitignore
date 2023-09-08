@@ -1,0 +1,8 @@
+cordova/hooks
+cordova/platforms
+cordova/plugins
+cordova/www
+node_modules
+apk
+build
+jslib/phaser-virtual-joystick/

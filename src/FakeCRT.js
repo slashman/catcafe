@@ -75,4 +75,5 @@ function fakeCRT(options) {
     }, Math.floor(1000 / 40));
 }
 
-module.exports = fakeCRT;
+//module.exports = fakeCRT;
+export default fakeCRT
